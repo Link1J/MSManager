@@ -23,26 +23,26 @@ ExampleAppPrefs::ExampleAppPrefs(BaseObjectType* cobject,
   m_refBuilder(refBuilder),
   m_settings(),
   m_font(nullptr),
-  m_transition(nullptr)
+  m_query_port(nullptr)
 {
   m_refBuilder->get_widget("font", m_font);
   if (!m_font)
     throw std::runtime_error("No \"font\" object in prefs.ui");
 
-  m_refBuilder->get_widget("transition", m_transition);
-  if (!m_transition)
-    throw std::runtime_error("No \"transition\" object in prefs.ui");
+  m_refBuilder->get_widget("query_port", m_query_port);
+  if (!m_query_port)
+    throw std::runtime_error("No \"query_port\" object in prefs.ui");
 
-  m_settings = Gio::Settings::create("org.gtkmm.exampleapp");
+  m_settings = Gio::Settings::create("msmanager");
   m_settings->bind("font", m_font->property_font_name());
-  m_settings->bind("transition", m_transition->property_active_id());
+  //m_settings->bind("query_port", m_query_port->property_active_id());
 }
 
 //static
 ExampleAppPrefs* ExampleAppPrefs::create(Gtk::Window& parent)
 {
   // Load the Builder file and instantiate its widgets.
-  auto refBuilder = Gtk::Builder::create_from_resource("/org/gtkmm/exampleapp/prefs.ui");
+  auto refBuilder = Gtk::Builder::create_from_resource("/msmanager/prefs.ui");
 
   ExampleAppPrefs* dialog = nullptr;
   refBuilder->get_widget_derived("prefs_dialog", dialog);

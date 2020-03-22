@@ -62,7 +62,7 @@ void ExampleApplication::on_startup()
   auto refBuilder = Gtk::Builder::create();
   try
   {
-    refBuilder->add_from_resource("/org/gtkmm/exampleapp/app_menu.ui");
+    refBuilder->add_from_resource("/msmanager/app_menu.ui");
   }
   catch (const Glib::Error& ex)
   {

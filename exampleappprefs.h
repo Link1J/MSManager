@@ -30,7 +30,7 @@ protected:
   Glib::RefPtr<Gtk::Builder> m_refBuilder;
   Glib::RefPtr<Gio::Settings> m_settings;
   Gtk::FontButton* m_font;
-  Gtk::ComboBoxText* m_transition;
+  Gtk::SpinButton* m_query_port;
 };
 
 #endif /* GTKMM_EXAMPLEAPPPREFS_H_ */

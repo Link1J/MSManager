@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=MSManager
+GenericName=MSManager
+Comment=Minecraft Server Manager
+Icon=msmanager
+StartupNotify=true
+Exec=@bindir@/msmanager
+Categories=Utility

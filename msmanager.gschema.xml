@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <schema path="/org/gtkmm/exampleapp/" id="org.gtkmm.exampleapp">
+  <schema path="/msmanager/" id="msmanager">
     <key name="font" type="s">
       <default>'Monospace 12'</default>
       <summary>Font</summary>

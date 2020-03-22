@@ -44,7 +44,7 @@ protected:
   Gtk::ToggleButton* m_search;
   Gtk::SearchBar* m_searchbar;
   Gtk::SearchEntry* m_searchentry;
-  Gtk::MenuButton* m_gears;
+  Gtk::Button* m_gears;
   Gtk::Revealer* m_sidebar;
   Gtk::ListBox* m_words;
   Gtk::Label* m_lines;

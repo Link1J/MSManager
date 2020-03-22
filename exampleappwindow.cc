@@ -73,7 +73,7 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
     throw std::runtime_error("No \"lines_label\" object in window.ui");
 
   // Bind settings.
-  m_settings = Gio::Settings::create("org.gtkmm.exampleapp");
+  m_settings = Gio::Settings::create("msmanager");
   m_settings->bind("transition", m_stack->property_transition_type());
   m_settings->bind("show-words", m_sidebar->property_reveal_child());
 
@@ -92,13 +92,13 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
   // Connect the menu to the MenuButton m_gears, and bind the show-words setting
   // to the win.show-words action and the "Words" menu item.
   // (The connection between action and menu item is specified in gears_menu.ui.)
-  auto menu_builder = Gtk::Builder::create_from_resource("/org/gtkmm/exampleapp/gears_menu.ui");
+  auto menu_builder = Gtk::Builder::create_from_resource("/msmanager/gears_menu.ui");
   auto object = menu_builder->get_object("menu");
   auto menu = Glib::RefPtr<Gio::MenuModel>::cast_dynamic(object);
   if (!menu)
     throw std::runtime_error("No \"menu\" object in gears_menu.ui");
 
-  m_gears->set_menu_model(menu);
+  //m_gears->set_menu_model(menu);
   add_action(m_settings->create_action("show-words"));
 
   // Bind the "visible" property of m_lines to the win.show-lines action, to
@@ -117,14 +117,14 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
   set_show_menubar(true);
 
   // Set the window icon.
-  set_icon(Gdk::Pixbuf::create_from_resource("/org/gtkmm/exampleapp/exampleapp.png"));
+  set_icon(Gdk::Pixbuf::create_from_resource("/msmanager/msmanager.png"));
 }
 
 //static
 ExampleAppWindow* ExampleAppWindow::create()
 {
   // Load the Builder file and instantiate its widgets.
-  auto refBuilder = Gtk::Builder::create_from_resource("/org/gtkmm/exampleapp/window.ui");
+  auto refBuilder = Gtk::Builder::create_from_resource("/msmanager/window.ui");
 
   ExampleAppWindow* window = nullptr;
   refBuilder->get_widget_derived("app_window", window);
