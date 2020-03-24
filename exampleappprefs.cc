@@ -22,20 +22,38 @@ ExampleAppPrefs::ExampleAppPrefs(BaseObjectType* cobject,
 : Gtk::Dialog(cobject),
   m_refBuilder(refBuilder),
   m_settings(),
-  m_font(nullptr),
-  m_query_port(nullptr)
+  m_ip(nullptr),
+  m_port(nullptr),
+  m_query_port(nullptr),
+  m_rcon_port(nullptr),
+  m_rcon_password(nullptr)
 {
-  m_refBuilder->get_widget("font", m_font);
-  if (!m_font)
-    throw std::runtime_error("No \"font\" object in prefs.ui");
+  m_refBuilder->get_widget("ip", m_ip);
+  if (!m_ip)
+    throw std::runtime_error("No \"ip\" object in prefs.ui");
+
+  m_refBuilder->get_widget("port", m_port);
+  if (!m_port)
+    throw std::runtime_error("No \"port\" object in prefs.ui");
 
   m_refBuilder->get_widget("query_port", m_query_port);
   if (!m_query_port)
     throw std::runtime_error("No \"query_port\" object in prefs.ui");
 
+  m_refBuilder->get_widget("rcon_port", m_rcon_port);
+  if (!m_rcon_port)
+    throw std::runtime_error("No \"rcon_port\" object in prefs.ui");
+
+  m_refBuilder->get_widget("rcon_password", m_rcon_password);
+  if (!m_rcon_password)
+    throw std::runtime_error("No \"rcon_password\" object in prefs.ui");
+
   m_settings = Gio::Settings::create("msmanager");
-  m_settings->bind("font", m_font->property_font_name());
-  //m_settings->bind("query_port", m_query_port->property_active_id());
+  m_settings->bind("ip", m_ip->property_text());
+  m_settings->bind("port", m_port->property_value());
+  m_settings->bind("query-port", m_query_port->property_value());
+  m_settings->bind("rcon-port", m_rcon_port->property_value());
+  m_settings->bind("rcon-password", m_rcon_password->property_text());
 }
 
 //static

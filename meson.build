@@ -6,7 +6,7 @@ project('MSManager', 'c', 'cpp',
 )
 
 gnome = import('gnome')
-gtkmm_dep = dependency('gtkmm-3.0')
+cxx = meson.get_compiler('cpp')
 
 program_name = 'msmanager'
 
@@ -15,6 +15,14 @@ cpp_sources = [
 	'exampleappwindow.cc',
 	'exampleapplication.cc',
 	'exampleappprefs.cc',
+	'serverconnection.cc',
+]
+
+deps = [
+	dependency('gtkmm-3.0'),
+	dependency('boost'),
+	dependency('nlohmann_json'),
+	dependency('threads'),
 ]
 
 resources = gnome.compile_resources('resources',
@@ -24,7 +32,7 @@ schemas = gnome.compile_schemas(depend_files: 'msmanager.gschema.xml')
 
 executable(program_name,
 	cpp_sources, resources, schemas,
-	dependencies: gtkmm_dep
+	dependencies: deps
 )
 
 python3 = import('python').find_installation('python3')

@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema path="/msmanager/" id="msmanager">
-    <key name="font" type="s">
-      <default>'Monospace 12'</default>
-      <summary>Font</summary>
-      <description>The font to be used for content.</description>
+    <key name="ip" type="s">
+      <default>'localhost'</default>
+      <summary>IP</summary>
     </key>
-    <key name="transition" type="s">
-      <choices>
-        <choice value='none'/>
-        <choice value='crossfade'/>
-        <choice value='slide-left-right'/>
-      </choices>
-      <default>'none'</default>
-      <summary>Transition</summary>
-      <description>The transition to use when switching tabs.</description>
+    <key name="port" type="i">
+      <default>25565</default>
+      <summary>Port</summary>
     </key>
-    <key name="show-words" type="b">
-      <default>false</default>
-      <summary>Show words</summary>
-      <description>Whether to show a word list in the sidebar.</description>
+    <key name="query-port" type="i">
+      <default>25585</default>
+      <summary>Query Port</summary>
+    </key>
+    <key name="rcon-port" type="i">
+      <default>25575</default>
+      <summary>RCON Port</summary>
+    </key>
+    <key name="rcon-password" type="s">
+      <default>''</default>
+      <summary>RCON Password</summary>
     </key>
   </schema>
 </schemalist>

@@ -3,7 +3,6 @@
   <gresource prefix="/msmanager">
     <file preprocess="xml-stripblanks">window.ui</file>
     <file preprocess="xml-stripblanks">app_menu.ui</file>
-    <file preprocess="xml-stripblanks">gears_menu.ui</file>
     <file preprocess="xml-stripblanks">prefs.ui</file>
     <file>msmanager.png</file>
   </gresource>

@@ -29,8 +29,11 @@ public:
 protected:
   Glib::RefPtr<Gtk::Builder> m_refBuilder;
   Glib::RefPtr<Gio::Settings> m_settings;
-  Gtk::FontButton* m_font;
+  Gtk::Entry* m_ip;
+  Gtk::SpinButton* m_port;
   Gtk::SpinButton* m_query_port;
+  Gtk::SpinButton* m_rcon_port;
+  Gtk::Entry* m_rcon_password;
 };
 
 #endif /* GTKMM_EXAMPLEAPPPREFS_H_ */

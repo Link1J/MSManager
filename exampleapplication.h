@@ -17,29 +17,36 @@
 #define GTKMM_EXAMPLEAPPLICATION_H
 
 #include <gtkmm.h>
+#include "serverconnection.h"
 
 class ExampleAppWindow;
 
 class ExampleApplication: public Gtk::Application
 {
 protected:
-  ExampleApplication();
+	ExampleApplication();
 
 public:
-  static Glib::RefPtr<ExampleApplication> create();
+	static Glib::RefPtr<ExampleApplication> create();
 
 protected:
-  // Override default signal handlers:
-  void on_startup() override;
-  void on_activate() override;
-  void on_open(const Gio::Application::type_vec_files& files,
-    const Glib::ustring& hint) override;
+	// Override default signal handlers:
+	void on_startup() override;
+	void on_activate() override;
+	void on_open(const Gio::Application::type_vec_files& files,
+	const Glib::ustring& hint) override;
 
 private:
-  ExampleAppWindow* create_appwindow();
-  void on_hide_window(Gtk::Window* window);
-  void on_action_preferences();
-  void on_action_quit();
+	ExampleAppWindow* create_appwindow();
+
+	void on_hide_window(Gtk::Window* window);
+
+	void on_action_preferences(   );
+	void on_action_update     (   );
+	void on_action_quit       (   );
+	bool on_timeout           (int);
+
+	ServerConnection server_connection;
 };
 
 #endif /* GTKMM_EXAMPLEAPPLICATION_H */

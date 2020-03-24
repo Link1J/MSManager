@@ -21,36 +21,30 @@
 class ExampleAppWindow : public Gtk::ApplicationWindow
 {
 public:
-  ExampleAppWindow(BaseObjectType* cobject,
-    const Glib::RefPtr<Gtk::Builder>& refBuilder);
+	ExampleAppWindow(BaseObjectType* cobject,
+		const Glib::RefPtr<Gtk::Builder>& refBuilder);
 
-  static ExampleAppWindow* create();
+	static ExampleAppWindow* create();
 
-  void open_file_view(const Glib::RefPtr<Gio::File>& file);
+	void update_users  (std::vector<std::string> users);
+	void update_motd   (std::string motd              );
+	void update_players(int online, int max           );
+	void update_image  (std::vector<uint8_t> image    );
+	void update_type   (std::string server_type       );
 
 protected:
-  // Signal handlers
-  void on_search_text_changed();
-  void on_visible_child_changed();
-  void on_find_word(const Gtk::Button* button);
-  void on_reveal_child_changed();
+	Glib::RefPtr<Gtk::Builder> refBuilder;
+	Glib::RefPtr<Gio::Settings> settings;
 
-  void update_words();
-  void update_lines();
-
-  Glib::RefPtr<Gtk::Builder> m_refBuilder;
-  Glib::RefPtr<Gio::Settings> m_settings;
-  Gtk::Stack* m_stack;
-  Gtk::ToggleButton* m_search;
-  Gtk::SearchBar* m_searchbar;
-  Gtk::SearchEntry* m_searchentry;
-  Gtk::Button* m_gears;
-  Gtk::Revealer* m_sidebar;
-  Gtk::ListBox* m_words;
-  Gtk::Label* m_lines;
-  Gtk::Label* m_lines_label;
-  Glib::RefPtr<Glib::Binding> m_binding_search_enabled;
-  Glib::RefPtr<Glib::Binding> m_binding_lines_visible;
+	Gtk::MenuButton* gears;
+	Gtk::ListBox* online_users;
+	Gtk::ListBox* users_online;
+	Gtk::HeaderBar* header;
+	Gtk::Image* server_icon;
+	Gtk::Label* motd;
+	Gtk::Label* online_players;
+	Gtk::Label* max_players;
+	Gtk::Label* server_type;
 };
 
 #endif /* GTKMM_EXAMPLEAPPWINDOW_H */
