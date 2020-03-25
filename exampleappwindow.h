@@ -35,15 +35,20 @@ public:
 	void update_type   (std::string server_type       );
 	void add_command   (std::string command           );
 
-	void on_command_enter(               );
-	void on_scroll_down  (Gtk::Allocation);
+	bool on_button_press_event(GdkEventButton*);
+	void on_command_enter     (               );
+	void on_scroll_down       (Gtk::Allocation);
+	void on_user_command      (std::string    );
+	void on_user_kick         (               );
+	void on_user_ban          (               );
+	void on_user_creative     (               );
+	void on_user_survival     (               );
+	void on_user_spectator    (               );
 
 	ServerConnection* server_connection;
+	Gtk::Box* user_selected;
 
 protected:
-	bool bottom = true;
-	bool scrolling = false;
-
 	Glib::RefPtr<Gtk::Builder> refBuilder;
 	Glib::RefPtr<Gio::Settings> settings;
 	Glib::RefPtr<Gtk::Adjustment> adjustment;
@@ -59,6 +64,7 @@ protected:
 	Gtk::ListBox* messages_list;
 	Gtk::Entry* command;
 	Gtk::ScrolledWindow* messages;
+	Gtk::Menu* user_menu;
 };
 
 #endif /* GTKMM_EXAMPLEAPPWINDOW_H */

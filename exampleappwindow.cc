@@ -34,9 +34,9 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
 	header(nullptr)
 {
 	// Get widgets from the Gtk::Builder file.
-	//refBuilder->get_widget("gears", gears);
-	//if (!gears)
-	//	throw std::runtime_error("No \"gears\" object in window.ui");
+	refBuilder->get_widget("gears", gears);
+	if (!gears)
+		throw std::runtime_error("No \"gears\" object in window.ui");
 
 	refBuilder->get_widget("online_users", online_users);
 	if (!online_users)
@@ -82,12 +82,18 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
 	// to the win.show-words action and the "Words" menu item.
 	// (The connection between action and menu item is specified in gears_menu.ui.)
 	auto menu_builder = Gtk::Builder::create_from_resource("/msmanager/app_menu.ui");
-	auto object = menu_builder->get_object("appmenu");
-	auto menu = Glib::RefPtr<Gio::MenuModel>::cast_dynamic(object);
+	auto menu = Glib::RefPtr<Gio::MenuModel>::cast_dynamic(menu_builder->get_object("appmenu"));
 	if (!menu)
 		throw std::runtime_error("No \"menu\" object in app_menu.ui");
 
-	//gears->set_menu_model(menu);
+	gears->set_menu_model(menu);
+
+	menu_builder = Gtk::Builder::create_from_resource("/msmanager/right_click_menus.ui");
+	menu = Glib::RefPtr<Gio::MenuModel>::cast_dynamic(menu_builder->get_object("user_menu"));
+	if (!menu)
+		throw std::runtime_error("No \"user_menu\" object in right_click_menus.ui");
+
+	user_menu = new Gtk::Menu(menu);
 
 	adjustment = messages_list->get_adjustment();
 
@@ -98,6 +104,16 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
 	// Connect signal handlers.
 	command      ->signal_activate     ().connect(sigc::mem_fun(*this, &ExampleAppWindow::on_command_enter));
 	messages_list->signal_size_allocate().connect(sigc::mem_fun(*this, &ExampleAppWindow::on_scroll_down  ));
+
+	auto user_menu_group = Gio::SimpleActionGroup::create();
+
+	user_menu_group->add_action("kick"     , sigc::mem_fun(*this, &ExampleAppWindow::on_user_kick     ));
+	user_menu_group->add_action("ban"      , sigc::mem_fun(*this, &ExampleAppWindow::on_user_ban      ));
+	user_menu_group->add_action("creative" , sigc::mem_fun(*this, &ExampleAppWindow::on_user_creative ));
+	user_menu_group->add_action("survival" , sigc::mem_fun(*this, &ExampleAppWindow::on_user_survival ));
+	user_menu_group->add_action("spectator", sigc::mem_fun(*this, &ExampleAppWindow::on_user_spectator));
+
+	user_menu->insert_action_group("user_menu", user_menu_group);
 
 	// Set the window icon.
 	set_icon(Gdk::Pixbuf::create_from_resource("/msmanager/msmanager.png"));
@@ -140,14 +156,16 @@ void ExampleAppWindow::update_users(std::vector<std::string> users)
 
 	for (auto user : users)
 	{
-		auto row = Gtk::make_managed<Gtk::Box>();
+		auto row   = Gtk::make_managed<Gtk::Box  >(    );
 		auto label = Gtk::make_managed<Gtk::Label>(user);
 
 		label->set_alignment(0);
 		label->show();
 
 		row->pack_start(*label);
-    	row->show();
+		row->show();
+
+		row->signal_button_press_event().connect(sigc::mem_fun(*this, &ExampleAppWindow::on_button_press_event));
 
     	online_users->add(*row);
 	}
@@ -187,3 +205,40 @@ void ExampleAppWindow::on_scroll_down(Gtk::Allocation allocation)
 	auto upper = adjustment->get_upper();
 	adjustment->set_value(upper);
 }
+
+bool ExampleAppWindow::on_button_press_event(GdkEventButton* event)
+{
+	if((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
+	{
+		if(!user_menu->get_attach_widget())
+			user_menu->attach_to_widget(*this);
+
+		user_selected = (Gtk::Box*)online_users->get_row_at_y(event->y)->get_children()[0];
+		user_menu->popup(event->button, event->time);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void ExampleAppWindow::on_user_command(std::string command_base)
+{
+	Gtk::Label* label = (Gtk::Label*)user_selected->get_children()[0];
+	std::string user_name = label->get_text();
+
+	user_selected = nullptr;
+
+	std::string command;
+	command.resize(command_base.size() + user_name.size());
+	sprintf((char*)command.data(), command_base.c_str(), user_name.c_str());
+
+	server_connection->SendCommand(command);
+}
+
+void ExampleAppWindow::on_user_kick     () { on_user_command("kick %s"              ); }
+void ExampleAppWindow::on_user_ban      () { on_user_command("ban %s"               ); }
+void ExampleAppWindow::on_user_creative () { on_user_command("gamemode creative %s" ); }
+void ExampleAppWindow::on_user_survival () { on_user_command("gamemode survival %s" ); }
+void ExampleAppWindow::on_user_spectator() { on_user_command("gamemode spectator %s"); }

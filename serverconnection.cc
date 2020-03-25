@@ -324,18 +324,39 @@ void ServerConnection::Update()
     iss.ignore(1);
 
     std::string name;
+	bool newName = false;
+
     while(iss.good() && iss.peek()!='\0') 
 	{
         getline(iss, name, '\0');
         players.push_back(name);
+
+		if (!users.contains(name))
+			newName = true;
+		
+		users[name] = 1;
     }
+
+	for(auto it = users.begin(); it != users.end();)
+	{
+	  	if (it->second == 0)
+	  	{
+			it = users.erase(it); // previously this was something like m_map.erase(it++);
+			newName = true;
+	  	}
+	  	else
+		{
+			++it;
+		}
+	}
 
 	//for (auto& item : status["players"]["sample"])
 	//{
 	//	players.push_back(item["name"]);
 	//}
 
-	window->update_users(players);
+	if (newName)
+		window->update_users(players);
 }
 
 void ServerConnection::SendCommand(std::string command)
@@ -350,7 +371,7 @@ void ServerConnection::SendCommand(std::string command)
 	asio::write(rcon_socket, asio::buffer(&login, login.length + 4));
 
 	std::vector<char> response;
-	
+
 	asio::read(rcon_socket, asio::buffer(&login, sizeof(login)), asio::transfer_at_least(12));
 
 	if (login.id == 1 && login.type == 0)

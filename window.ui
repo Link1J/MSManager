@@ -2,9 +2,10 @@
 <interface>
   <!-- interface-requires gtk+ 3.8 -->
   <object class="GtkApplicationWindow" id="app_window">
-    <property name="default-width">320</property>
-    <property name="default-height">200</property>
+    <property name="default-width">500</property>
+    <property name="default-height">400</property>
     <property name="title" translatable="yes">Minecraft Server Manager</property>
+    <property name="show-menubar">False</property>
     <!--child type="titlebar">
       <object class="GtkHeaderBar" id="header">
         <property name="title" translatable="yes">Minecraft Server Manager</property>
@@ -30,6 +31,7 @@
       <object class="GtkBox" id="content_box">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
+        <property name="margin">2</property>
         <child>
           <object class="GtkBox" id="hbox">
             <property name="visible">True</property>
@@ -40,7 +42,7 @@
                 <property name="orientation">vertical</property>
                 <property name="vexpand">True</property>
                 <property name="hexpand">False</property>
-                <property name="width-request">100</property>
+                <property name="width-request">150</property>
                 <child>
                   <object class="GtkGrid" id="player_count_info">
                     <property name="visible">True</property>
@@ -162,6 +164,19 @@
                           </object>
                         </child>
                       </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuButton" id="gears">
+                        <property name="visible">True</property>
+                        <property name="direction">none</property>
+                        <property name="use-popover">True</property>
+                        <style>
+                          <class name="image-button"/>
+                        </style>
+                      </object>
+                      <packing>
+                        <property name="pack-type">end</property>
+                      </packing>
                     </child>
                   </object>
                 </child>

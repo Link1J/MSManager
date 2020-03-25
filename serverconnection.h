@@ -14,6 +14,7 @@ class ServerConnection
 
 	Glib::RefPtr<Gio::Settings> settings;
 	std::string pre_password;
+	std::unordered_map<std::string, int> users;
 
 public:
 	ExampleAppWindow* window;
