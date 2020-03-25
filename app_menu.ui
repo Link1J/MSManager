@@ -7,10 +7,6 @@
         <attribute name="label" translatable="yes">_Settings</attribute>
         <attribute name="action">app.preferences</attribute>
       </item>
-      <item>
-        <attribute name="label" translatable="yes">_Update</attribute>
-        <attribute name="action">app.update</attribute>
-      </item>
     </section>
     <section>
       <item>
@@ -20,6 +16,18 @@
       <item>
         <attribute name="label" translatable="yes">_Quit</attribute>
         <attribute name="action">app.quit</attribute>
+      </item>
+    </section>
+  </menu>
+  <menu id="gearmenu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Settings</attribute>
+        <attribute name="action">app.preferences</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Update</attribute>
+        <attribute name="action">app.update</attribute>
       </item>
     </section>
   </menu>

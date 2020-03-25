@@ -411,7 +411,8 @@ void ServerConnection::SendCommand(std::string command)
 	while (login.type == 0);
 	response.push_back(0);
 
-	if (command == "help")
+	int pos = command.find("help");
+	if (pos == 0 || pos == 1)
 	{
 		std::vector<char> temp; 
 		std::replace(response.begin(), response.end(), '/', '\n');

@@ -80,9 +80,9 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
 
 	// Connect the menu to the MenuButton m_gears
 	auto menu_builder = Gtk::Builder::create_from_resource("/msmanager/app_menu.ui");
-	auto menu = Glib::RefPtr<Gio::MenuModel>::cast_dynamic(menu_builder->get_object("appmenu"));
+	auto menu = Glib::RefPtr<Gio::MenuModel>::cast_dynamic(menu_builder->get_object("gearmenu"));
 	if (!menu)
-		throw std::runtime_error("No \"menu\" object in app_menu.ui");
+		throw std::runtime_error("No \"gearmenu\" object in app_menu.ui");
 
 	gears->set_menu_model(menu);
 
