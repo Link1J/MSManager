@@ -15,9 +15,14 @@
 
 #include "exampleappwindow.h"
 #include "exampleappprefs.h"
+#include "serverconnection.h"
 #include <iostream>
 #include <stdexcept>
 #include <set>
+#include <chrono>
+#include <thread>
+
+using namespace std::literals::chrono_literals;
 
 ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
 	const Glib::RefPtr<Gtk::Builder>& refBuilder)
@@ -26,21 +31,20 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
 	settings(),
 	gears(nullptr),
 	online_users(nullptr),
-	users_online(nullptr),
 	header(nullptr)
 {
 	// Get widgets from the Gtk::Builder file.
-	refBuilder->get_widget("gears", gears);
-	if (!gears)
-		throw std::runtime_error("No \"gears\" object in window.ui");
+	//refBuilder->get_widget("gears", gears);
+	//if (!gears)
+	//	throw std::runtime_error("No \"gears\" object in window.ui");
 
 	refBuilder->get_widget("online_users", online_users);
 	if (!online_users)
 		throw std::runtime_error("No \"online_users\" object in window.ui");
 
-	refBuilder->get_widget("header", header);
-	if (!header)
-		throw std::runtime_error("No \"header\" object in window.ui");
+	//refBuilder->get_widget("header", header);
+	//if (!header)
+	//	throw std::runtime_error("No \"header\" object in window.ui");
 
 	refBuilder->get_widget("server_icon", server_icon);
 	if (!server_icon)
@@ -52,7 +56,7 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
 
 	refBuilder->get_widget("max_players", max_players);
 	if (!max_players)
-		throw std::runtime_error("No \"max_players\" object in window.ui");	
+		throw std::runtime_error("No \"max_players\" object in window.ui");
 
 	refBuilder->get_widget("online_players", online_players);
 	if (!online_players)
@@ -60,7 +64,19 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
 	
 	refBuilder->get_widget("server_type", server_type);
 	if (!server_type)
-		throw std::runtime_error("No \"server_type\" object in window.ui");	
+		throw std::runtime_error("No \"server_type\" object in window.ui");
+
+	refBuilder->get_widget("messages_list", messages_list);
+	if (!messages_list)
+		throw std::runtime_error("No \"messages_list\" object in window.ui");
+
+	refBuilder->get_widget("command", command);
+	if (!command)
+		throw std::runtime_error("No \"command\" object in window.ui");
+	
+	refBuilder->get_widget("messages", messages);
+	if (!messages)
+		throw std::runtime_error("No \"messages\" object in window.ui");
 
 	// Connect the menu to the MenuButton m_gears, and bind the show-words setting
 	// to the win.show-words action and the "Words" menu item.
@@ -71,15 +87,17 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
 	if (!menu)
 		throw std::runtime_error("No \"menu\" object in app_menu.ui");
 
-	gears->set_menu_model(menu);
+	//gears->set_menu_model(menu);
+
+	adjustment = messages_list->get_adjustment();
 
 	// Bind settings.
 	settings = Gio::Settings::create("msmanager");
-	settings->bind("ip", header->property_subtitle());
+	//settings->bind("ip", header->property_subtitle());
 	
 	// Connect signal handlers.
-	//gears->signal_clicked().connect(
-	//	sigc::mem_fun(*this, &ExampleAppWindow::open_perfs));
+	command      ->signal_activate     ().connect(sigc::mem_fun(*this, &ExampleAppWindow::on_command_enter));
+	messages_list->signal_size_allocate().connect(sigc::mem_fun(*this, &ExampleAppWindow::on_scroll_down  ));
 
 	// Set the window icon.
 	set_icon(Gdk::Pixbuf::create_from_resource("/msmanager/msmanager.png"));
@@ -144,4 +162,28 @@ void ExampleAppWindow::update_players(int online, int max)
 void ExampleAppWindow::update_type(std::string server_type)
 {
 	this->server_type->set_text(server_type);
+}
+
+void ExampleAppWindow::add_command(std::string command)
+{
+	auto label = Gtk::make_managed<Gtk::Label>(command);
+
+	label->set_alignment(0);
+	label->show();
+
+    messages_list->add(*label);
+
+	adjustment->set_value(adjustment->get_upper()); 
+}
+
+void ExampleAppWindow::on_command_enter()
+{
+	server_connection->SendCommand(command->get_text());
+	command->set_text("");
+}
+
+void ExampleAppWindow::on_scroll_down(Gtk::Allocation allocation)
+{
+	auto upper = adjustment->get_upper();
+	adjustment->set_value(upper);
 }

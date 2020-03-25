@@ -41,6 +41,8 @@ ExampleAppWindow* ExampleApplication::create_appwindow()
 	sigc::slot<bool> my_slot = sigc::bind(sigc::mem_fun(*this, &ExampleApplication::on_timeout), 0);
   	sigc::connection conn = Glib::signal_timeout().connect(my_slot, 500);
 
+	appwindow->server_connection = &server_connection;
+
 	return appwindow;
 }
 

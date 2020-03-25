@@ -21,16 +21,24 @@ ServerConnection::ServerConnection()
 	settings = Gio::Settings::create("msmanager");
 }
 
+struct RCONPacket
+{
+	int length;
+	int id;
+	int type;
+	uint8_t payload[4096];
+};
+
 void ServerConnection::Reconnect()
 {
 	if (dontTry)
 		return;
 
-	auto server_ip   = settings->get_string("ip"           );
-	auto server_port = settings->get_int   ("port"         );
-	auto query_port  = settings->get_int   ("query-port"   );
-	auto rcon_port   = settings->get_int   ("rcon-port"    );
-	auto rcon_pass   = settings->get_string("rcon-password");
+	auto server_ip   = (std::string)settings->get_string("ip"           );
+	auto server_port =              settings->get_int   ("port"         );
+	auto query_port  =              settings->get_int   ("query-port"   );
+	auto rcon_port   =              settings->get_int   ("rcon-port"    );
+	auto rcon_pass   = (std::string)settings->get_string("rcon-password");
 
     tcp::resolver tcp_resolver(io_context);
 	udp::resolver udp_resolver(io_context);
@@ -42,20 +50,39 @@ void ServerConnection::Reconnect()
 	try 
 	{
 		std::regex ip_check("^(.+\..{2,10}|localhost|(?:\d{1,3}\.){3}\d{1,3})\/?.*?$");
-		if (!std::regex_search((std::string)server_ip, ip_check))
+		if (!std::regex_search(server_ip, ip_check))
 			return;
 
-    	asio::connect(server_socket, tcp_resolver.resolve(           (std::string)server_ip, std::to_string(server_port)));
-    	asio::connect(rcon_socket  , tcp_resolver.resolve(           (std::string)server_ip, std::to_string(rcon_port  )));
-    	asio::connect(query_socket , udp_resolver.resolve(udp::v4(), (std::string)server_ip, std::to_string(query_port )));
+    	asio::connect(server_socket, tcp_resolver.resolve(           server_ip, std::to_string(server_port)));
+    	asio::connect(rcon_socket  , tcp_resolver.resolve(           server_ip, std::to_string(rcon_port  )));
+    	asio::connect(query_socket , udp_resolver.resolve(udp::v4(), server_ip, std::to_string(query_port )));
 
-		query_endpoints = udp_resolver.resolve(udp::v4(), (std::string)server_ip, std::to_string(query_port ));
+		query_endpoints = udp_resolver.resolve(udp::v4(), server_ip, std::to_string(query_port ));
 
 		Update();
 	}
 	catch(std::exception e)
 	{
 	}
+
+	RCONPacket login;
+	memset(&login, 0, sizeof(login));
+	login.length = 10 + rcon_pass.length();
+	login.id     = 1;
+	login.type   = 3;
+	memcpy(login.payload, rcon_pass.data(), rcon_pass.length());
+
+	asio::write(rcon_socket, asio::buffer(&login, login.length + 4)                             );
+	asio::read (rcon_socket, asio::buffer(&login, sizeof(login)   ), asio::transfer_at_least(12));
+
+	if (login.id == -1 && pre_password != rcon_pass)
+	{
+		Gtk::MessageDialog error("RCON Login failed.", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, false);
+		error.set_secondary_text("Sending commands will no be avilable.");
+		error.run();
+	}
+
+	pre_password = rcon_pass;
 }
 
 static std::vector<uint8_t> writeVarInt(uint32_t value) 
@@ -309,4 +336,60 @@ void ServerConnection::Update()
 	//}
 
 	window->update_users(players);
+}
+
+void ServerConnection::SendCommand(std::string command)
+{
+	RCONPacket login;
+	memset(&login, 0, sizeof(login));
+	login.length = 10 + command.length();
+	login.id     = 1;
+	login.type   = 2;
+	memcpy(login.payload, command.data(), command.length());
+
+	asio::write(rcon_socket, asio::buffer(&login, login.length + 4));
+
+	std::vector<char> response;
+	
+	asio::read(rcon_socket, asio::buffer(&login, sizeof(login)), asio::transfer_at_least(12));
+
+	if (login.id == 1 && login.type == 0)
+	{
+		for (int a = 0; a < login.length - 10; a++)
+			response.push_back(login.payload[a]);
+	}
+
+	login.length     = 10 ;
+	login.type       = 100;
+	login.payload[0] = 0  ;
+	login.payload[1] = 0  ;
+
+	asio::write(rcon_socket, asio::buffer(&login, login.length + 4));
+
+	do
+	{
+		asio::read(rcon_socket, asio::buffer(&login, sizeof(login)), asio::transfer_at_least(12));
+
+		if (login.id == 1 && login.type == 0)
+		{
+			if (memcmp(login.payload, "Unknown request 64", 18) == 0)
+				break;
+
+			for (int a = 0; a < login.length - 10; a++)
+				response.push_back(login.payload[a]);
+		}
+	}
+	while (login.type == 0);
+	response.push_back(0);
+
+	if (command == "help")
+	{
+		std::vector<char> temp; 
+		std::replace(response.begin(), response.end(), '/', '\n');
+		temp.insert(temp.end(), response.begin() + 1, response.end());
+		response = temp;
+	}
+
+	window->add_command("/" + command);
+	window->add_command(response.data());
 }

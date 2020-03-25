@@ -5,11 +5,7 @@
     <property name="default-width">320</property>
     <property name="default-height">200</property>
     <property name="title" translatable="yes">Minecraft Server Manager</property>
-    <child>
-      <object class="GtkBox" id="content_box">
-        <property name="visible">True</property>
-        <property name="orientation">vertical</property>
-    <child type="titlebar">
+    <!--child type="titlebar">
       <object class="GtkHeaderBar" id="header">
         <property name="title" translatable="yes">Minecraft Server Manager</property>
         <property name="subtitle" translatable="yes">Put IP here</property>
@@ -23,20 +19,17 @@
             <style>
               <class name="image-button"/>
             </style>
-            <!--child>
-              <object class="GtkImage" id="gear-icon">
-                <property name="visible">True</property>
-                <property name="icon-name">open-menu-symbolic</property>
-                <property name="icon-size">1</property>
-              </object>
-            </child-->
           </object>
           <packing>
             <property name="pack-type">end</property>
           </packing>
         </child>
       </object>
-    </child>
+    </child-->
+    <child>
+      <object class="GtkBox" id="content_box">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <object class="GtkBox" id="hbox">
             <property name="visible">True</property>
@@ -46,6 +39,7 @@
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <property name="vexpand">True</property>
+                <property name="hexpand">False</property>
                 <property name="width-request">100</property>
                 <child>
                   <object class="GtkGrid" id="player_count_info">

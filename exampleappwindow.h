@@ -18,6 +18,8 @@
 
 #include <gtkmm.h>
 
+class ServerConnection;
+
 class ExampleAppWindow : public Gtk::ApplicationWindow
 {
 public:
@@ -31,20 +33,32 @@ public:
 	void update_players(int online, int max           );
 	void update_image  (std::vector<uint8_t> image    );
 	void update_type   (std::string server_type       );
+	void add_command   (std::string command           );
+
+	void on_command_enter(               );
+	void on_scroll_down  (Gtk::Allocation);
+
+	ServerConnection* server_connection;
 
 protected:
+	bool bottom = true;
+	bool scrolling = false;
+
 	Glib::RefPtr<Gtk::Builder> refBuilder;
 	Glib::RefPtr<Gio::Settings> settings;
+	Glib::RefPtr<Gtk::Adjustment> adjustment;
 
 	Gtk::MenuButton* gears;
 	Gtk::ListBox* online_users;
-	Gtk::ListBox* users_online;
 	Gtk::HeaderBar* header;
 	Gtk::Image* server_icon;
 	Gtk::Label* motd;
 	Gtk::Label* online_players;
 	Gtk::Label* max_players;
 	Gtk::Label* server_type;
+	Gtk::ListBox* messages_list;
+	Gtk::Entry* command;
+	Gtk::ScrolledWindow* messages;
 };
 
 #endif /* GTKMM_EXAMPLEAPPWINDOW_H */
