@@ -4,6 +4,11 @@
   <object class="GtkApplicationWindow" id="app_window">
     <property name="default-width">320</property>
     <property name="default-height">200</property>
+    <property name="title" translatable="yes">Minecraft Server Manager</property>
+    <child>
+      <object class="GtkBox" id="content_box">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="header">
         <property name="title" translatable="yes">Minecraft Server Manager</property>
@@ -32,10 +37,6 @@
         </child>
       </object>
     </child>
-    <child>
-      <object class="GtkBox" id="content_box">
-        <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <object class="GtkBox" id="hbox">
             <property name="visible">True</property>
@@ -105,6 +106,11 @@
                     </child>
                   </object>
                 </child>
+                <!--child>
+                  <object class="GtkSeparator">
+                    <property name="visible">True</property>
+                  </object>
+                </child-->
                 <child>
                   <object class="GtkScrolledWindow" id="sidebar">
                     <property name="visible">True</property>
@@ -115,20 +121,18 @@
                       <object class="GtkListBox" id="online_users">
                         <property name="visible">True</property>
                         <property name="selection-mode">none</property>
-                        <!--child>
-                          <object class="GtkLabel" id="test">
-                            <property name="visible">True</property>
-                            <property name="label">testing</property>
-                            <property name="selectable">false</property>
-                            <property name="xalign">0</property>
-                          </object>
-                        </child-->
                       </object>
                     </child>
                   </object>
                 </child>
               </object>
             </child>
+            <!--child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+              </object>
+            </child-->
             <child>
               <object class="GtkBox" id="server">
                 <property name="visible">True</property>
@@ -177,14 +181,6 @@
                       <object class="GtkListBox" id="messages_list">
                         <property name="visible">True</property>
                         <property name="selection-mode">none</property>
-                        <!--child>
-                          <object class="GtkLabel" id="message">
-                            <property name="visible">True</property>
-                            <property name="label">testing</property>
-                            <property name="selectable">false</property>
-                            <property name="xalign">0</property>
-                          </object>
-                        </child-->
                       </object>
                     </child>
                   </object>

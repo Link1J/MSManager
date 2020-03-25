@@ -20,7 +20,7 @@ cpp_sources = [
 
 deps = [
 	dependency('gtkmm-3.0'),
-	dependency('boost'),
+	dependency('boost', modules : ['system', 'asio']),
 	dependency('nlohmann_json'),
 	dependency('threads'),
 ]

@@ -90,10 +90,10 @@ void ExampleApplication::on_activate()
 	{
 		std::cerr << "ExampleApplication::on_activate(): " << ex.what() << std::endl;
 	}
-	//catch (const std::exception& ex)
-	//{
-	//	std::cerr << "ExampleApplication::on_activate(): " << ex.what() << std::endl;
-	//}
+	catch (const std::exception& ex)
+	{
+		std::cerr << "ExampleApplication::on_activate(): " << ex.what() << std::endl;
+	}
 }
 
 void ExampleApplication::on_open(const Gio::Application::type_vec_files& files,
@@ -125,6 +125,7 @@ void ExampleApplication::on_open(const Gio::Application::type_vec_files& files,
 
 void ExampleApplication::on_hide_window(Gtk::Window* window)
 {
+	server_connection.dontTry = false;
 	server_connection.Reconnect();
 	delete window;
 }
@@ -133,6 +134,7 @@ void ExampleApplication::on_action_preferences()
 {
 	try
 	{
+		server_connection.dontTry = true;
 		auto prefs_dialog = ExampleAppPrefs::create(*get_active_window());
 		prefs_dialog->present();
 

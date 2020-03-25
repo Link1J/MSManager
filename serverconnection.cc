@@ -4,6 +4,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <sstream>
+#include <regex>
 
 using json = nlohmann::json;
 
@@ -22,6 +23,9 @@ ServerConnection::ServerConnection()
 
 void ServerConnection::Reconnect()
 {
+	if (dontTry)
+		return;
+
 	auto server_ip   = settings->get_string("ip"           );
 	auto server_port = settings->get_int   ("port"         );
 	auto query_port  = settings->get_int   ("query-port"   );
@@ -37,6 +41,10 @@ void ServerConnection::Reconnect()
 
 	try 
 	{
+		std::regex ip_check("^(.+\..{2,10}|localhost|(?:\d{1,3}\.){3}\d{1,3})\/?.*?$");
+		if (!std::regex_search((std::string)server_ip, ip_check))
+			return;
+
     	asio::connect(server_socket, tcp_resolver.resolve(           (std::string)server_ip, std::to_string(server_port)));
     	asio::connect(rcon_socket  , tcp_resolver.resolve(           (std::string)server_ip, std::to_string(rcon_port  )));
     	asio::connect(query_socket , udp_resolver.resolve(udp::v4(), (std::string)server_ip, std::to_string(query_port )));
@@ -218,6 +226,9 @@ void extractKey(std::istringstream& iss, const char* expected)
 
 void ServerConnection::Update()
 {
+	if (dontTry)
+		return;
+
 	auto handshake = ServerHandshake(1);
 	asio::write(server_socket, asio::buffer(handshake));
 	auto packet = ServerPacket(0);
@@ -282,7 +293,7 @@ void ServerConnection::Update()
 	window->update_type(game_id + " " + version + " " + gametype);
 
 	std::vector<std::string> players;
-	/*extractKey(iss, "\001player_");
+	extractKey(iss, "\001player_");
     iss.ignore(1);
 
     std::string name;
@@ -290,12 +301,12 @@ void ServerConnection::Update()
 	{
         getline(iss, name, '\0');
         players.push_back(name);
-    }*/
+    }
 
-	for (auto& item : status["players"]["sample"])
-	{
-		players.push_back(item["name"]);
-	}
+	//for (auto& item : status["players"]["sample"])
+	//{
+	//	players.push_back(item["name"]);
+	//}
 
 	window->update_users(players);
 }

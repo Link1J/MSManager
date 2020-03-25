@@ -16,6 +16,7 @@ class ServerConnection
 
 public:
 	ExampleAppWindow* window;
+	bool dontTry = false;
 
 	ServerConnection();
 	void Update();

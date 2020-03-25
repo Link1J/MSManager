@@ -2,6 +2,7 @@
 	"cmake.cmakePath": "mcw",
 	"files.associations": {
 		"*.rasi": "css",
+		"*.cmake.in": "cmake",
 		"*.ipp": "cpp",
 		"cctype": "cpp",
 		"clocale": "cpp",
@@ -68,6 +69,8 @@
 		"typeinfo": "cpp",
 		"valarray": "cpp",
 		"variant": "cpp",
-		"forward_list": "cpp"
+		"forward_list": "cpp",
+		"regex": "cpp",
+		"shared_mutex": "cpp"
 	}
 }

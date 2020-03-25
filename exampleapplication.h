@@ -29,6 +29,8 @@ protected:
 public:
 	static Glib::RefPtr<ExampleApplication> create();
 
+	ServerConnection server_connection;
+
 protected:
 	// Override default signal handlers:
 	void on_startup() override;
@@ -45,8 +47,6 @@ private:
 	void on_action_update     (   );
 	void on_action_quit       (   );
 	bool on_timeout           (int);
-
-	ServerConnection server_connection;
 };
 
 #endif /* GTKMM_EXAMPLEAPPLICATION_H */
