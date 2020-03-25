@@ -23,8 +23,7 @@ class ServerConnection;
 class ExampleAppWindow : public Gtk::ApplicationWindow
 {
 public:
-	ExampleAppWindow(BaseObjectType* cobject,
-		const Glib::RefPtr<Gtk::Builder>& refBuilder);
+	ExampleAppWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refBuilder);
 
 	static ExampleAppWindow* create();
 
@@ -35,7 +34,7 @@ public:
 	void update_type   (std::string server_type       );
 	void add_command   (std::string command           );
 
-	bool on_button_press_event(GdkEventButton*);
+	bool on_button_press      (GdkEventButton*);
 	void on_command_enter     (               );
 	void on_scroll_down       (Gtk::Allocation);
 	void on_user_command      (std::string    );
@@ -65,6 +64,7 @@ protected:
 	Gtk::Entry* command;
 	Gtk::ScrolledWindow* messages;
 	Gtk::Menu* user_menu;
+	Gtk::Label* hostname;
 };
 
 #endif /* GTKMM_EXAMPLEAPPWINDOW_H */

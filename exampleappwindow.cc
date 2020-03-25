@@ -42,10 +42,6 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
 	if (!online_users)
 		throw std::runtime_error("No \"online_users\" object in window.ui");
 
-	//refBuilder->get_widget("header", header);
-	//if (!header)
-	//	throw std::runtime_error("No \"header\" object in window.ui");
-
 	refBuilder->get_widget("server_icon", server_icon);
 	if (!server_icon)
 		throw std::runtime_error("No \"server_icon\" object in window.ui");
@@ -78,9 +74,11 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
 	if (!messages)
 		throw std::runtime_error("No \"messages\" object in window.ui");
 
-	// Connect the menu to the MenuButton m_gears, and bind the show-words setting
-	// to the win.show-words action and the "Words" menu item.
-	// (The connection between action and menu item is specified in gears_menu.ui.)
+	refBuilder->get_widget("hostname", hostname);
+	if (!hostname)
+		throw std::runtime_error("No \"hostname\" object in window.ui");
+
+	// Connect the menu to the MenuButton m_gears
 	auto menu_builder = Gtk::Builder::create_from_resource("/msmanager/app_menu.ui");
 	auto menu = Glib::RefPtr<Gio::MenuModel>::cast_dynamic(menu_builder->get_object("appmenu"));
 	if (!menu)
@@ -99,7 +97,7 @@ ExampleAppWindow::ExampleAppWindow(BaseObjectType* cobject,
 
 	// Bind settings.
 	settings = Gio::Settings::create("msmanager");
-	//settings->bind("ip", header->property_subtitle());
+	settings->bind("ip", hostname->property_label());
 	
 	// Connect signal handlers.
 	command      ->signal_activate     ().connect(sigc::mem_fun(*this, &ExampleAppWindow::on_command_enter));
@@ -135,9 +133,16 @@ ExampleAppWindow* ExampleAppWindow::create()
 
 void ExampleAppWindow::update_image(std::vector<uint8_t> image)
 {
-	auto stream = Gio::MemoryInputStream::create();
-	stream->add_data(image.data(), image.size());
-	server_icon->set(Gdk::Pixbuf::create_from_stream(stream));
+	if (image.size() != 0)
+	{
+		auto stream = Gio::MemoryInputStream::create();
+		stream->add_data(image.data(), image.size());
+		server_icon->set(Gdk::Pixbuf::create_from_stream(stream));
+	}
+	else
+	{
+		server_icon->clear();
+	}
 }
 
 void ExampleAppWindow::update_motd(std::string motd)
@@ -156,16 +161,20 @@ void ExampleAppWindow::update_users(std::vector<std::string> users)
 
 	for (auto user : users)
 	{
-		auto row   = Gtk::make_managed<Gtk::Box  >(    );
-		auto label = Gtk::make_managed<Gtk::Label>(user);
+		auto row   = Gtk::make_managed<Gtk::EventBox>(    );
+		auto box   = Gtk::make_managed<Gtk::Box     >(    );
+		auto label = Gtk::make_managed<Gtk::Label   >(user);
 
 		label->set_alignment(0);
 		label->show();
 
-		row->pack_start(*label);
+		box->pack_start(*label);
+		box->show();
+
+		row->add(*box);
 		row->show();
 
-		row->signal_button_press_event().connect(sigc::mem_fun(*this, &ExampleAppWindow::on_button_press_event));
+		row->signal_button_press_event().connect(sigc::mem_fun(*this, &ExampleAppWindow::on_button_press));
 
     	online_users->add(*row);
 	}
@@ -206,15 +215,20 @@ void ExampleAppWindow::on_scroll_down(Gtk::Allocation allocation)
 	adjustment->set_value(upper);
 }
 
-bool ExampleAppWindow::on_button_press_event(GdkEventButton* event)
+bool ExampleAppWindow::on_button_press(GdkEventButton* event)
 {
 	if((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 	{
 		if(!user_menu->get_attach_widget())
 			user_menu->attach_to_widget(*this);
 
-		user_selected = (Gtk::Box*)online_users->get_row_at_y(event->y)->get_children()[0];
-		user_menu->popup(event->button, event->time);
+		auto row = online_users->get_row_at_y(event->y);
+		if (row)
+		{
+			auto box = (Gtk::EventBox*)row->get_children()[0];
+			user_selected = (Gtk::Box*)box->get_child();
+			user_menu->popup(event->button, event->time);
+		}
 		return true;
 	}
 	else

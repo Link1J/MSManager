@@ -43,10 +43,15 @@ private:
 
 	void on_hide_window(Gtk::Window* window);
 
-	void on_action_preferences(   );
-	void on_action_update     (   );
-	void on_action_quit       (   );
-	bool on_timeout           (int);
+	void on_action_preferences   (   );
+	void on_action_update        (   );
+	void on_action_quit          (   );
+	void on_action_about         (   );
+	bool on_timeout              (int);
+	void on_about_dialog_response(int);
+
+	Gtk::AboutDialog dialog;
+	ExampleAppWindow* appwindow;
 };
 
 #endif /* GTKMM_EXAMPLEAPPLICATION_H */

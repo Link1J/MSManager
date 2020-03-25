@@ -57,32 +57,38 @@ void ServerConnection::Reconnect()
     	asio::connect(rcon_socket  , tcp_resolver.resolve(           server_ip, std::to_string(rcon_port  )));
     	asio::connect(query_socket , udp_resolver.resolve(udp::v4(), server_ip, std::to_string(query_port )));
 
-		query_endpoints = udp_resolver.resolve(udp::v4(), server_ip, std::to_string(query_port ));
-
 		Update();
+
+		RCONPacket login;
+		memset(&login, 0, sizeof(login));
+		login.length = 10 + rcon_pass.length();
+		login.id     = 1;
+		login.type   = 3;
+		memcpy(login.payload, rcon_pass.data(), rcon_pass.length());
+
+		asio::write(rcon_socket, asio::buffer(&login, login.length + 4)                             );
+		asio::read (rcon_socket, asio::buffer(&login, sizeof(login)   ), asio::transfer_at_least(12));
+
+		if (login.id == -1 && pre_password != rcon_pass)
+		{
+			Gtk::MessageDialog error("RCON Login failed.", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, false);
+			error.set_secondary_text("Sending commands will no be avilable.");
+			error.run();
+		}
+
+		pre_password = rcon_pass;
 	}
 	catch(std::exception e)
 	{
+		if (!window)
+			return;
+
+		window->update_motd("Could not connect to server.");
+		window->update_players(0,0);
+		window->update_type("");
+		window->update_image({});
+		window->update_users({});
 	}
-
-	RCONPacket login;
-	memset(&login, 0, sizeof(login));
-	login.length = 10 + rcon_pass.length();
-	login.id     = 1;
-	login.type   = 3;
-	memcpy(login.payload, rcon_pass.data(), rcon_pass.length());
-
-	asio::write(rcon_socket, asio::buffer(&login, login.length + 4)                             );
-	asio::read (rcon_socket, asio::buffer(&login, sizeof(login)   ), asio::transfer_at_least(12));
-
-	if (login.id == -1 && pre_password != rcon_pass)
-	{
-		Gtk::MessageDialog error("RCON Login failed.", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, false);
-		error.set_secondary_text("Sending commands will no be avilable.");
-		error.run();
-	}
-
-	pre_password = rcon_pass;
 }
 
 static std::vector<uint8_t> writeVarInt(uint32_t value) 
@@ -255,6 +261,8 @@ void ServerConnection::Update()
 {
 	if (dontTry)
 		return;
+	if (!window)
+		return;
 
 	auto handshake = ServerHandshake(1);
 	asio::write(server_socket, asio::buffer(handshake));
@@ -284,9 +292,6 @@ void ServerConnection::Update()
 
 	auto status = json::parse(ServerStatus(response));
 
-	if (!window)
-		return;
-
 	if (status.count("favicon"))
 	{
 		auto image = status["favicon"].get<std::string>();
@@ -305,9 +310,6 @@ void ServerConnection::Update()
     std::string version;
     std::string gametype;
 
-    extractKey(iss, "splitnum");
-    iss.ignore(2);
-
 	extractKey(iss, "gametype");
     getline(iss, gametype, '\0');
 
@@ -325,6 +327,12 @@ void ServerConnection::Update()
 
     std::string name;
 	bool newName = false;
+
+
+	for(auto it = users.begin(); it != users.end(); it++)
+	{
+		it->second = 0;
+	}
 
     while(iss.good() && iss.peek()!='\0') 
 	{
@@ -411,6 +419,9 @@ void ServerConnection::SendCommand(std::string command)
 		response = temp;
 	}
 
-	window->add_command("/" + command);
+	if (command[0] != '/')
+		command = "/" + command;
+
+	window->add_command(command);
 	window->add_command(response.data());
 }
