@@ -1,11 +1,11 @@
 project('MSManager', 'c', 'cpp',
 	version: '1.0.0',
 	default_options: [
-		'cpp_std=c++2a'
+		'cpp_std=c++latest'
 	]
 )
 
-gnome = import('gnome')
+qt5 = import('qt5')
 cxx = meson.get_compiler('cpp')
 
 program_name = 'msmanager'
@@ -19,16 +19,17 @@ cpp_sources = [
 ]
 
 deps = [
-	dependency('gtkmm-3.0'),
-	dependency('boost', modules : ['system', 'asio']),
-	dependency('nlohmann_json'),
+	dependency('qt5', modules: ['Core', 'Gui']),
+	dependency('boost', modules: ['system']),
+	dependency('nlohmann_json', fallback: ['nlohmann_json', 'nlohmann_json_dep']),
 	dependency('threads'),
 ]
 
-resources = gnome.compile_resources('resources',
-									'msmanager.gresource.xml',
-									source_dir: '.')
-schemas = gnome.compile_schemas(depend_files: 'msmanager.gschema.xml')
+if host_machine.system() == 'windows'
+    deps += cxx.find_library('ws2_32')
+	add_global_arguments('-D__USE_W32_SOCKETS', language : 'c')
+	add_global_arguments('-D__USE_W32_SOCKETS', language : 'cpp')
+endif
 
 executable(program_name,
 	cpp_sources, resources, schemas,
