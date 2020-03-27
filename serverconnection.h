@@ -14,6 +14,7 @@ class ServerConnection
 
 	Glib::RefPtr<Gio::Settings> settings;
 	std::string pre_password;
+	std::string server_ip_fail;
 	std::unordered_map<std::string, int> users;
 
 public:

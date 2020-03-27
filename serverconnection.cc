@@ -46,18 +46,55 @@ void ServerConnection::Reconnect()
 	server_socket.close();
 	rcon_socket  .close();
 	query_socket .close();
+	
+	std::regex ip_check("^(.+\..{2,10}|localhost|(?:\d{1,3}\.){3}\d{1,3})\/?.*?$");
+	if (!std::regex_search(server_ip, ip_check))
+		return;
 
 	try 
 	{
-		std::regex ip_check("^(.+\..{2,10}|localhost|(?:\d{1,3}\.){3}\d{1,3})\/?.*?$");
-		if (!std::regex_search(server_ip, ip_check))
+    	asio::connect(server_socket, tcp_resolver.resolve(           server_ip, std::to_string(server_port)));
+	}
+	catch(const std::exception& e)
+	{
+		if (server_ip == server_ip_fail)
 			return;
 
-    	asio::connect(server_socket, tcp_resolver.resolve(           server_ip, std::to_string(server_port)));
-    	asio::connect(rcon_socket  , tcp_resolver.resolve(           server_ip, std::to_string(rcon_port  )));
-    	asio::connect(query_socket , udp_resolver.resolve(udp::v4(), server_ip, std::to_string(query_port )));
+		Gtk::MessageDialog error("Failed to connect to server.", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, false);
+		error.set_secondary_text("");
+		error.run();
 
-		Update();
+		
+		if (!window)
+			return;
+
+		window->update_motd("");
+		window->update_players(0,0);
+		window->update_type("");
+		window->update_image({});
+		window->update_users({});
+
+		server_ip_fail = server_ip;
+
+		return;
+	}
+
+	try
+	{
+    	asio::connect(query_socket , udp_resolver.resolve(udp::v4(), server_ip, std::to_string(query_port )));
+	}
+	catch(const std::exception& e)
+	{
+		Gtk::MessageDialog error("Query connection failed.", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, false);
+		error.set_secondary_text("Some information may be missing.");
+		error.run();
+	}
+	
+	Update();
+
+	try
+	{
+    	asio::connect(rcon_socket  , tcp_resolver.resolve(           server_ip, std::to_string(rcon_port  )));
 
 		RCONPacket login;
 		memset(&login, 0, sizeof(login));
@@ -65,30 +102,25 @@ void ServerConnection::Reconnect()
 		login.id     = 1;
 		login.type   = 3;
 		memcpy(login.payload, rcon_pass.data(), rcon_pass.length());
-
+	
 		asio::write(rcon_socket, asio::buffer(&login, login.length + 4)                             );
 		asio::read (rcon_socket, asio::buffer(&login, sizeof(login)   ), asio::transfer_at_least(12));
-
+	
 		if (login.id == -1 && pre_password != rcon_pass)
 		{
 			Gtk::MessageDialog error("RCON Login failed.", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, false);
 			error.set_secondary_text("Sending commands will no be avilable.");
 			error.run();
 		}
-
+	
 		pre_password = rcon_pass;
 	}
-	catch(std::exception e)
+	catch(const std::exception& e)
 	{
-		if (!window)
-			return;
-
-		window->update_motd("Could not connect to server.");
-		window->update_players(0,0);
-		window->update_type("");
-		window->update_image({});
-		window->update_users({});
-	}
+		Gtk::MessageDialog error("RCON connection failed.", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, false);
+		error.set_secondary_text("Sending commands will no be avilable.");
+		error.run();
+	}	
 }
 
 static std::vector<uint8_t> writeVarInt(uint32_t value) 
