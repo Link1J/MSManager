@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
+    <width>508</width>
     <height>400</height>
    </rect>
   </property>
@@ -120,10 +120,16 @@
               <item>
                <widget class="QLabel" name="server_motd">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>250</width>
+                  <height>0</height>
+                 </size>
                 </property>
                 <property name="text">
                  <string/>
@@ -133,10 +139,16 @@
               <item>
                <widget class="QLabel" name="server_type">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>250</width>
+                  <height>0</height>
+                 </size>
                 </property>
                 <property name="text">
                  <string/>
@@ -146,10 +158,16 @@
               <item>
                <widget class="QLabel" name="server_ip">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>250</width>
+                  <height>0</height>
+                 </size>
                 </property>
                 <property name="text">
                  <string/>
@@ -193,10 +211,16 @@
           <item>
            <widget class="QListView" name="plugins_list">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -326,7 +350,10 @@
             <property name="sizeAdjustPolicy">
              <enum>QAbstractScrollArea::AdjustToContents</enum>
             </property>
-            <property name="autoScroll">
+            <property name="showDropIndicator" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="alternatingRowColors">
              <bool>true</bool>
             </property>
             <property name="verticalScrollMode">
@@ -339,7 +366,10 @@
              <enum>QListView::Static</enum>
             </property>
             <property name="resizeMode">
-             <enum>QListView::Fixed</enum>
+             <enum>QListView::Adjust</enum>
+            </property>
+            <property name="layoutMode">
+             <enum>QListView::Batched</enum>
             </property>
            </widget>
           </item>
@@ -359,7 +389,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
+     <width>508</width>
      <height>30</height>
     </rect>
    </property>

@@ -10,6 +10,24 @@
     <height>196</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>252</width>
+    <height>196</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>252</width>
+    <height>196</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Settings</string>
   </property>
@@ -67,6 +85,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="maximum">
+      <number>65535</number>
+     </property>
     </widget>
    </item>
    <item row="2" column="1">
@@ -77,6 +98,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="maximum">
+      <number>65535</number>
+     </property>
     </widget>
    </item>
    <item row="3" column="1">
@@ -86,6 +110,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="maximum">
+      <number>65535</number>
      </property>
     </widget>
    </item>

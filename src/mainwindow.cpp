@@ -4,6 +4,7 @@
 #include <QBuffer>
 #include <QImageReader>
 #include <QMessageBox>
+#include <QSettings>
 
 #include <iostream>
 
@@ -17,7 +18,13 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->users_list->setModel(userlist.data());
 
 	connection.window = this;
+	connection.Reconnect();
 	startTimer(1000);
+
+	QSettings settings;
+	ui->server_ip->setText(settings.value("server_ip").toString());
+
+
 }
 
 MainWindow::~MainWindow()
@@ -69,7 +76,7 @@ void MainWindow::update_type(std::string server_type)
 void MainWindow::add_command(std::string command)
 {
 	ui->command_list->addItem(QString::fromStdString(command));
-	ui->command_list->setCurrentRow(ui->command_list->count());
+	ui->command_list->scrollToBottom();
 }
 
 void MainWindow::add_user(std::string user)
@@ -133,6 +140,9 @@ void MainWindow::OpenSettings()
 {
 	auto settings_dialog = new SettingsDialog(this);
     settings_dialog->exec();
+
+	QSettings settings;
+	ui->server_ip->setText(settings.value("server_ip").toString());
 }
 
 void MainWindow::OpenAbout() 

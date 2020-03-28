@@ -1,11 +1,15 @@
 #include "serverconnection.h"
 #include "mainwindow.hpp"
+
 #include <vector>
 #include <iostream>
-#include <nlohmann/json.hpp>
 #include <sstream>
 #include <regex>
+
+#include <nlohmann/json.hpp>
+
 #include <QMessageBox>
+#include <QSettings>
 
 using json = nlohmann::json;
 using namespace asio::ip;
@@ -17,7 +21,6 @@ ServerConnection::ServerConnection()
 	, rcon_socket  (io_context)
 	, query_socket (io_context, udp::endpoint(udp::v4(), 0)) 
 {
-	//settings = Gio::Settings::create("msmanager");
 }
 
 struct RCONPacket
@@ -33,11 +36,13 @@ void ServerConnection::Reconnect()
 	if (dontTry)
 		return;
 
-	auto server_ip   = (std::string)"192.168.10.100"; //settings->get_string("ip"           );
-	auto server_port =              25565           ; //settings->get_int   ("port"         );
-	auto query_port  =              25585           ; //settings->get_int   ("query-port"   );
-	auto rcon_port   =              25575           ; //settings->get_int   ("rcon-port"    );
-	auto rcon_pass   = (std::string)"69a42jw2"      ; //settings->get_string("rcon-password");
+	QSettings settings;
+
+	auto server_ip   = settings.value("server_ip"    ).toString().toStdString();
+	auto server_port = settings.value("server_port"  ).toInt   ()              ;
+	auto query_port  = settings.value("query_port"   ).toInt   ()              ;
+	auto rcon_port   = settings.value("rcon_port"    ).toInt   ()              ;
+	auto rcon_pass   = settings.value("rcon_password").toString().toStdString();
 
     tcp::resolver tcp_resolver(io_context);
 	udp::resolver udp_resolver(io_context);
@@ -61,8 +66,8 @@ void ServerConnection::Reconnect()
 
 		QMessageBox::critical(
 			window,
-			"Failed to connect to server.",
-			""
+			"ERROR",
+			"Failed to connect to server."
 		);
 		
 		if (!window)
@@ -85,9 +90,9 @@ void ServerConnection::Reconnect()
 	catch(const std::exception& e)
 	{
 		QMessageBox::warning(
-			window, 
-			"Query connection failed.",
-			"Some information may be missing."
+			window,
+			"Warning",
+			"Query connection failed.\nSome information may be missing."
 		);
 	}
 	
@@ -111,8 +116,8 @@ void ServerConnection::Reconnect()
 		{
 			QMessageBox::warning(
 				window,
-				"RCON Login failed.",
-				"Sending commands will not be avilable."
+				"Warning",
+				"RCON Login failed.\nSending commands will not be avilable."
 			);
 		}
 	
@@ -121,9 +126,9 @@ void ServerConnection::Reconnect()
 	catch(const std::exception& e)
 	{
 		QMessageBox::warning(
-			window, 
-			"RCON connection failed.",
-			"Sending commands will not be avilable."
+			window,
+			"Warning",
+			"RCON connection failed.\nSending commands will not be avilable."
 		);
 	}	
 }
