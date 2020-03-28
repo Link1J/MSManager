@@ -10,6 +10,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 set(SOURCES
 	src/main.cpp
@@ -30,6 +31,7 @@ set(WINDOWS_DEF
 
 find_package(Qt5 COMPONENTS Widgets Qml Quick REQUIRED)
 find_package(ZLIB REQUIRED)
+find_package(Threads REQUIRED)
 
 add_executable(msmanager WIN32
 	${SOURCES}
@@ -57,4 +59,5 @@ target_link_libraries(msmanager
 	Qt5::Widgets
 	nlohmann_json::nlohmann_json
 	ZLIB::ZLIB
+	Threads::Threads
 )
