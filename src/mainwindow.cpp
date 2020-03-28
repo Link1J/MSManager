@@ -1,7 +1,14 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
 
-//==============================================================================
+#include <QBuffer>
+#include <QImageReader>
+#include <QMessageBox>
+
+#include <iostream>
+
+#include "settingsdialog.hpp"
+
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent), ui(new Ui::MainWindow), userlist(new UserModel)
 {
@@ -13,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
 	startTimer(1000);
 }
 
-//==============================================================================
 MainWindow::~MainWindow()
 {
   // Do nothing
@@ -28,21 +34,25 @@ void MainWindow::SendCommand()
 
 void MainWindow::update_image(std::vector<uint8_t> image)
 {
-	//if (image.size() != 0)
-	//{
-	//	auto stream = Gio::MemoryInputStream::create();
-	//	stream->add_data(image.data(), image.size());
-	//	server_icon->set(Gdk::Pixbuf::create_from_stream(stream));
-	//}
-	//else
-	//{
-	//	server_icon->clear();
-	//}
+	if (image.size() != 0)
+	{
+		QByteArray data = QByteArray::fromRawData((const char*)image.data(), image.size());
+		QBuffer qbuff(&data);
+		QImageReader qimg;
+		qimg.setDecideFormatFromContent(true);
+		qimg.setDevice(&qbuff);
+		QImage img = qimg.read();
+		ui->server_icon->setPixmap(QPixmap::fromImage(img));
+	}
+	else
+	{
+		ui->server_icon->clear();
+	}
 }
 
 void MainWindow::update_motd(std::string motd)
 {
-	//this->motd->set_text(motd);
+	ui->server_motd->setText(QString::fromStdString(motd));
 }
 
 void MainWindow::update_players(int online, int max)
@@ -53,7 +63,7 @@ void MainWindow::update_players(int online, int max)
 
 void MainWindow::update_type(std::string server_type)
 {
-	//this->server_type->set_text(server_type);
+	ui->server_type->setText(QString::fromStdString(server_type));
 }
 
 void MainWindow::add_command(std::string command)
@@ -118,3 +128,15 @@ void MainWindow::UserBan      () { on_user_command("ban %s"               ); }
 void MainWindow::UserCreative () { on_user_command("gamemode creative %s" ); }
 void MainWindow::UserSurvival () { on_user_command("gamemode survival %s" ); }
 void MainWindow::UserSpectator() { on_user_command("gamemode spectator %s"); }
+
+void MainWindow::OpenSettings() 
+{
+	auto settings_dialog = new SettingsDialog(this);
+    settings_dialog->exec();
+}
+
+void MainWindow::OpenAbout() 
+{
+	QMessageBox::about(this, "About", "MSManager\nCreated by: Link1J\n");
+}
+

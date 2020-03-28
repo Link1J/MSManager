@@ -41,6 +41,9 @@ public slots:
     void UserSurvival   (      );
     void UserSpectator  (      );
 
+    void OpenSettings   (      );
+    void OpenAbout      (      );
+
 protected:
     void timerEvent(QTimerEvent* event);
 

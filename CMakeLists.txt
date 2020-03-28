@@ -17,6 +17,7 @@ set(SOURCES
 	src/serverconnection.cpp
 	src/mainwindow.cpp
 	src/usermodel.cpp
+	src/settingsdialog.cpp
 	# Add New Files Here!
 )
 
@@ -33,7 +34,7 @@ find_package(Qt5 COMPONENTS Widgets Qml Quick REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
 
-add_executable(msmanager WIN32
+add_executable(msmanager
 	${SOURCES}
 	${UI_SOURCES}
 )

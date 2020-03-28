@@ -1,8 +1,8 @@
 {
 	"files.associations": {
-		"*.masm": "masm",
 		"*.rasi": "css",
 		"*.cmake.in": "cmake",
+		"*.masm": "masm",
 		"*.ipp": "cpp",
 		"cctype": "cpp",
 		"clocale": "cpp",
@@ -93,7 +93,10 @@
 		"xstring": "cpp",
 		"xtr1common": "cpp",
 		"xtree": "cpp",
-		"xutility": "cpp"
+		"xutility": "cpp",
+		"qimagereader": "cpp",
+		"qdialog": "cpp",
+		"cfenv": "cpp"
 	},
 	"C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
 }

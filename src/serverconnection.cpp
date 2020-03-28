@@ -352,7 +352,9 @@ public:
 void ServerConnection::Update()
 {
 	if (dontTry)
-		return;if (!window)	return;
+		return;
+	if (!window)
+		return;
 
 	auto handshake = ServerHandshake(1);
 	asio::write(server_socket, asio::buffer(handshake));
@@ -385,7 +387,7 @@ void ServerConnection::Update()
 
 	if (status.count("favicon"))
 	{
-		auto image = status["favicon"].get<std::string>();
+		image = status["favicon"].get<std::string>();
 		image = image.substr(std::string("data:image/png;base64,").size());
 	}
 

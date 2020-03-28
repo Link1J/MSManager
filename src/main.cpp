@@ -5,13 +5,13 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QIcon appIcon;
-    appIcon.addFile(":/Icons/AppIcon");
+    QIcon app_icon;
+    app_icon.addFile(":/Icons/AppIcon");
 
-    app.setWindowIcon(appIcon);
+    app.setWindowIcon(app_icon);
 
-    MainWindow mainWindow;
-    mainWindow.show();
+    MainWindow main_window;
+    main_window.show();
 
     return app.exec();
 }
