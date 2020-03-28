@@ -1,6 +1,6 @@
 {
-	"cmake.cmakePath": "mcw",
 	"files.associations": {
+		"*.masm": "masm",
 		"*.rasi": "css",
 		"*.cmake.in": "cmake",
 		"*.ipp": "cpp",
@@ -71,6 +71,29 @@
 		"variant": "cpp",
 		"forward_list": "cpp",
 		"regex": "cpp",
-		"shared_mutex": "cpp"
-	}
+		"shared_mutex": "cpp",
+		"xiosbase": "cpp",
+		"concepts": "cpp",
+		"resumable": "cpp",
+		"ios": "cpp",
+		"locale": "cpp",
+		"queue": "cpp",
+		"strstream": "cpp",
+		"xfacet": "cpp",
+		"xhash": "cpp",
+		"xlocale": "cpp",
+		"xlocbuf": "cpp",
+		"xlocinfo": "cpp",
+		"xlocmes": "cpp",
+		"xlocmon": "cpp",
+		"xlocnum": "cpp",
+		"xloctime": "cpp",
+		"xmemory": "cpp",
+		"xstddef": "cpp",
+		"xstring": "cpp",
+		"xtr1common": "cpp",
+		"xtree": "cpp",
+		"xutility": "cpp"
+	},
+	"C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <menu id="user_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Kick</attribute>
+        <attribute name="action">user_menu.kick</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Ban</attribute>
+        <attribute name="action">user_menu.ban</attribute>
+      </item>
+	  <submenu>
+	  	 <attribute name='label' translatable='yes'>_Gamemode</attribute>
+         <section>
+           <item>
+             <attribute name='label' translatable='yes'>_Creative</attribute>
+             <attribute name='action'>user_menu.creative</attribute>
+           </item>
+           <item>
+             <attribute name='label' translatable='yes'>_Survival</attribute>
+             <attribute name='action'>user_menu.survival</attribute>
+           </item>
+           <item>
+             <attribute name='label' translatable='yes'>_Spectator</attribute>
+             <attribute name='action'>user_menu.spectator</attribute>
+           </item>
+         </section>
+       </submenu>
+    </section>
+  </menu>
+</interface>
