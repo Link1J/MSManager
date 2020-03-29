@@ -5,31 +5,40 @@
 #include <QImageReader>
 #include <QMessageBox>
 #include <QSettings>
+#include <QInputDialog>
 
 #include <iostream>
+
+#include <fmt/format.h>
 
 #include "settingsdialog.hpp"
 
 MainWindow::MainWindow(QWidget *parent)
-  : QMainWindow(parent), ui(new Ui::MainWindow), userlist(new UserModel)
+  : QMainWindow(parent)
+  , ui(new Ui::MainWindow)
+  , userlist(new UserModel)
+  , pluginlist(new PluginModel)
 {
     ui->setupUi(this);
 
-	ui->users_list->setModel(userlist.data());
+	ui->users_list  ->setModel(userlist  .data());
+	ui->plugins_list->setModel(pluginlist.data());
 
-	connection.window = this;
-	connection.Reconnect();
-	startTimer(1000);
+	ui->mod_name_group->hide();
+	ui->version_group ->hide();
+	ui->plugins_group ->hide();
 
 	QSettings settings;
 	ui->server_ip->setText(settings.value("server_ip").toString());
 
-
+	connection.window = this;
+	connection.Reconnect();
+	startTimer(1000);
 }
 
 MainWindow::~MainWindow()
 {
-  // Do nothing
+	// Do nothing
 }
 
 void MainWindow::SendCommand()
@@ -39,11 +48,12 @@ void MainWindow::SendCommand()
 	ui->command->clear();
 }
 
-void MainWindow::update_image(std::vector<uint8_t> image)
+void MainWindow::UpdateImage(std::string image)
 {
 	if (image.size() != 0)
 	{
-		QByteArray data = QByteArray::fromRawData((const char*)image.data(), image.size());
+		QByteArray string = QByteArray::fromStdString(image);
+		QByteArray data = QByteArray::fromBase64(string);
 		QBuffer qbuff(&data);
 		QImageReader qimg;
 		qimg.setDecideFormatFromContent(true);
@@ -57,34 +67,43 @@ void MainWindow::update_image(std::vector<uint8_t> image)
 	}
 }
 
-void MainWindow::update_motd(std::string motd)
+void MainWindow::UpdateMotd(std::string motd)
 {
 	ui->server_motd->setText(QString::fromStdString(motd));
 }
 
-void MainWindow::update_players(int online, int max)
+void MainWindow::UpdateOnline(int online)
 {
 	ui->users_online->setText(QString::number(online));
-	ui->users_max   ->setText(QString::number(max   ));
 }
 
-void MainWindow::update_type(std::string server_type)
+void MainWindow::UpdateMax(int max)
 {
+	ui->users_max->setText(QString::number(max));
+}
+
+void MainWindow::UpdateType(std::string server_type)
+{
+	if (server_type != "")
+		ui->version_group->show();
+	else
+		ui->version_group->hide();
+		
 	ui->server_type->setText(QString::fromStdString(server_type));
 }
 
-void MainWindow::add_command(std::string command)
+void MainWindow::AddCommand(std::string command)
 {
 	ui->command_list->addItem(QString::fromStdString(command));
 	ui->command_list->scrollToBottom();
 }
 
-void MainWindow::add_user(std::string user)
+void MainWindow::AddUser(std::string user)
 {
 	userlist->addUser(user);
 }
 
-void MainWindow::remove_user(std::string user)
+void MainWindow::RemoveUser(std::string user)
 {
 	userlist->removeUser(user);
 }
@@ -116,25 +135,34 @@ void MainWindow::UserContextMenu(QPoint point)
 
 void MainWindow::timerEvent(QTimerEvent* event)
 {
-	connection.Reconnect();
+	connection.Update();
 }
 
-void MainWindow::on_user_command(std::string command_base)
+template <typename... Args>
+void MainWindow::SendUserCommand(std::string command_base, Args... args)
 {
-	std::string command;
-	command.resize(command_base.size() + userSelected.size());
-	sprintf((char*)command.data(), command_base.c_str(), userSelected.c_str());
-
+	std::string command = fmt::format(
+		command_base,
+		userSelected,
+		args...
+	);
 	userSelected = "";
-
 	connection.SendCommand(command);
 }
 
-void MainWindow::UserKick     () { on_user_command("kick %s"              ); }
-void MainWindow::UserBan      () { on_user_command("ban %s"               ); }
-void MainWindow::UserCreative () { on_user_command("gamemode creative %s" ); }
-void MainWindow::UserSurvival () { on_user_command("gamemode survival %s" ); }
-void MainWindow::UserSpectator() { on_user_command("gamemode spectator %s"); }
+void MainWindow::UserKick() 
+{ 
+	QString text = QInputDialog::getText(this, tr("Reason"), tr("Reason for kick:")); 
+	SendUserCommand("kick {0} {1}", text.toStdString()); 
+}
+void MainWindow::UserBan() 
+{ 
+	QString text = QInputDialog::getText(this, tr("Reason"), tr("Reason for ban:")); 
+	SendUserCommand("ban {0} {1}", text.toStdString()); 
+}
+void MainWindow::UserCreative () { SendUserCommand("gamemode creative {0}" ); }
+void MainWindow::UserSurvival () { SendUserCommand("gamemode survival {0}" ); }
+void MainWindow::UserSpectator() { SendUserCommand("gamemode spectator {0}"); }
 
 void MainWindow::OpenSettings() 
 {
@@ -143,6 +171,7 @@ void MainWindow::OpenSettings()
 
 	QSettings settings;
 	ui->server_ip->setText(settings.value("server_ip").toString());
+	connection.Reconnect();
 }
 
 void MainWindow::OpenAbout() 
@@ -150,3 +179,28 @@ void MainWindow::OpenAbout()
 	QMessageBox::about(this, "About", "MSManager\nCreated by: Link1J\n");
 }
 
+void MainWindow::AddPlugin(std::string plugin)
+{
+	pluginlist->addPlugin(plugin);
+	
+	if (pluginlist->rowCount() > 0)
+		ui->plugins_group->show();
+}
+
+void MainWindow::RemovePlugin(std::string plugin)
+{
+	pluginlist->removePlugin(plugin);
+
+	if (pluginlist->rowCount() <= 0)
+		ui->plugins_group->hide();
+}
+
+void MainWindow::UpdateModName(std::string mod_name)
+{
+	if (mod_name != "")
+		ui->mod_name_group->show();
+	else
+		ui->mod_name_group->hide();
+		
+	ui->mod_name->setText(QString::fromStdString(mod_name));	
+}

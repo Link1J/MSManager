@@ -5,6 +5,7 @@
 
 #include "serverconnection.h"
 #include "usermodel.hpp"
+#include "pluginmodel.hpp"
 
 namespace Ui {
     class MainWindow;
@@ -18,18 +19,19 @@ public:
     MainWindow(QWidget *parent = 0);
     virtual ~MainWindow();
 
-	void update_motd   (std::string motd              );
-	void update_players(int online, int max           );
-	void update_image  (std::vector<uint8_t> image    );
-	void update_type   (std::string server_type       );
+	void UpdateMotd     (std::string motd        );
+	void UpdateOnline   (int online              );
+	void UpdateMax      (int max                 );
+	void UpdateImage    (std::string image       );
+	void UpdateType     (std::string server_type );
+	void UpdateModName  (std::string mod_name    );
 
-	void add_command   (std::string command           );
-    void add_user      (std::string user              );
+	void AddCommand     (std::string command     );
+    void AddUser        (std::string user        );
+    void AddPlugin      (std::string plugin      );
 
-    void remove_user   (std::string user              );
-    
-    void on_user_command  (std::string command_base);
-
+    void RemoveUser     (std::string user        );
+    void RemovePlugin   (std::string plugin      );
 
 public slots:
     void SendCommand    (      );
@@ -48,8 +50,12 @@ protected:
     void timerEvent(QTimerEvent* event);
 
 private:
+    template <typename... Args>
+    void SendUserCommand(std::string command_base, Args... args);
+
     QScopedPointer<Ui::MainWindow> ui;
     ServerConnection connection;
     QScopedPointer<UserModel> userlist;
     std::string userSelected;
+    QScopedPointer<PluginModel> pluginlist;
 };

@@ -1,10 +1,15 @@
 #include "serverconnection.h"
 #include "mainwindow.hpp"
+#include "varint.h"
+#include "vectorstream.h"
 
 #include <vector>
 #include <iostream>
 #include <sstream>
 #include <regex>
+#include <future>
+#include <thread>
+#include <chrono>
 
 #include <nlohmann/json.hpp>
 
@@ -13,6 +18,7 @@
 
 using json = nlohmann::json;
 using namespace asio::ip;
+using namespace std::literals;
 
 asio::io_context io_context;
 
@@ -21,6 +27,12 @@ ServerConnection::ServerConnection()
 	, rcon_socket  (io_context)
 	, query_socket (io_context, udp::endpoint(udp::v4(), 0)) 
 {
+}
+
+ServerConnection::~ServerConnection()
+{
+	if (reconnect_thread.joinable())
+		reconnect_thread.detach();
 }
 
 struct RCONPacket
@@ -32,139 +44,94 @@ struct RCONPacket
 };
 
 void ServerConnection::Reconnect()
-{
-	if (dontTry)
-		return;
+{	
+	dontTry = true;
 
-	QSettings settings;
-
-	auto server_ip   = settings.value("server_ip"    ).toString().toStdString();
-	auto server_port = settings.value("server_port"  ).toInt   ()              ;
-	auto query_port  = settings.value("query_port"   ).toInt   ()              ;
-	auto rcon_port   = settings.value("rcon_port"    ).toInt   ()              ;
-	auto rcon_pass   = settings.value("rcon_password").toString().toStdString();
-
-    tcp::resolver tcp_resolver(io_context);
-	udp::resolver udp_resolver(io_context);
-
-	server_socket.close();
-	rcon_socket  .close();
-	query_socket .close();
-	
-	std::regex ip_check("^(.+\\..{2,10}|localhost|(?:\\d{1,3}\\.){3}\\d{1,3})\\/?.*?$");
-	if (!std::regex_search(server_ip, ip_check))
-		return;
-
-	try 
-	{
-    	asio::connect(server_socket, tcp_resolver.resolve(           server_ip, std::to_string(server_port)));
-	}
-	catch(const std::exception& e)
-	{
-		if (server_ip == server_ip_fail)
-			return;
-
-		QMessageBox::critical(
-			window,
-			"ERROR",
-			"Failed to connect to server."
-		);
-		
-		if (!window)
-			return;
-
-		window->update_motd("");
-		window->update_players(0,0);
-		window->update_type("");
-		window->update_image({});
-
-		server_ip_fail = server_ip;
-
-		return;
-	}
-
-	try
-	{
-    	asio::connect(query_socket , udp_resolver.resolve(udp::v4(), server_ip, std::to_string(query_port )));
-	}
-	catch(const std::exception& e)
-	{
-		QMessageBox::warning(
-			window,
-			"Warning",
-			"Query connection failed.\nSome information may be missing."
-		);
-	}
-	
-	Update();
-
-	try
-	{
-    	asio::connect(rcon_socket  , tcp_resolver.resolve(           server_ip, std::to_string(rcon_port  )));
-
-		RCONPacket login;
-		memset(&login, 0, sizeof(login));
-		login.length = 10 + rcon_pass.length();
-		login.id     = 1;
-		login.type   = 3;
-		memcpy(login.payload, rcon_pass.data(), rcon_pass.length());
-	
-		asio::write(rcon_socket, asio::buffer(&login, login.length + 4)                             );
-		asio::read (rcon_socket, asio::buffer(&login, sizeof(login)   ), asio::transfer_at_least(12));
-	
-		if (login.id == -1 && pre_password != rcon_pass)
+	std::packaged_task<void()> task([&]{
+		switch (IPCheck())
 		{
+		case State::Failed:
+			QMessageBox::critical(
+				window,
+				"ERROR",
+				"IP Address is not valid.\n"
+			);
+
+			if (!window)
+				return;
+
+			window->UpdateMotd("");
+			window->UpdateOnline(0);
+			window->UpdateMax(0);
+			window->UpdateType("");
+			window->UpdateImage({});
+
+		case State::NoAttempt:
+			return;
+		}
+
+		switch (ServerConnect())
+		{
+		case State::Failed:
+			QMessageBox::critical(
+				window,
+				"ERROR",
+				"Failed to connect to server.\n"
+			);
+
+			if (!window)
+				return;
+
+			window->UpdateMotd("");
+			window->UpdateOnline(0);
+			window->UpdateMax(0);
+			window->UpdateType("");
+			window->UpdateImage({});
+
+		case State::NoAttempt:
+			return;
+		}
+
+		switch (QueryConnect())
+		{
+		case State::Failed:
 			QMessageBox::warning(
 				window,
 				"Warning",
-				"RCON Login failed.\nSending commands will not be avilable."
+				"Query connection failed.\n"
+				"Some information may be missing.\n"
 			);
 		}
-	
-		pre_password = rcon_pass;
-	}
-	catch(const std::exception& e)
-	{
-		QMessageBox::warning(
-			window,
-			"Warning",
-			"RCON connection failed.\nSending commands will not be avilable."
-		);
-	}	
-}
 
-static std::vector<uint8_t> writeVarInt(uint32_t value) 
-{
-	std::vector<uint8_t> varInt;
-    do {
-        uint8_t temp = (uint8_t)(value & 0b01111111);
-        // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
-        value >>= 7;
-        if (value != 0) {
-            temp |= 0b10000000;
-        }
-        varInt.push_back(temp);
-    } while (value != 0);
-	return varInt;
-}
+		switch (RCONConnect())
+		{
+		case State::Failed:
+			QMessageBox::warning(
+				window,
+				"Warning",
+				"RCON connection failed.\n"
+				"Sending commands will not be avilable.\n"
+			);
+		}
 
-static uint32_t readVarInt(uint8_t* data, uint32_t& numRead) 
-{
-	numRead = 0;
-    uint32_t result = 0;
-    uint8_t read;
-    do {
-        read = data[numRead];
-        int value = (read & 0b01111111);
-        result |= (value << (7 * numRead));
+		switch (RCONLogin())
+		{
+		case State::Failed:
+			QMessageBox::warning(
+				window,
+				"Warning",
+				"RCON packet failed.\n"
+				"Sending commands will not be avilable.\n"
+			);
+		}
 
-        numRead++;
-        if (numRead > 5) {
-			return result;
-        }
-    } while ((read & 0b10000000) != 0);
+		reconnected = true;
+		dontTry = false;
+	});
 
-    return result;
+	if (reconnect_thread.joinable())
+		reconnect_thread.detach();
+	reconnect_thread = std::thread(std::move(task));
 }
 
 void FillOutPacket(std::vector<uint8_t>& packet, int id)
@@ -176,7 +143,7 @@ void FillOutPacket(std::vector<uint8_t>& packet, int id)
 	packet.insert(packet.begin(), length.begin(), length.end());
 }
 
-std::vector<uint8_t> ServerHandshake(int status)
+std::vector<uint8_t> ServerPacketHandshake(int status)
 {
 	auto protcolVersion = writeVarInt(-1);
 	auto serverAddress  = writeVarInt(0);
@@ -194,7 +161,7 @@ std::vector<uint8_t> ServerHandshake(int status)
 	return packet;
 }
 
-std::vector<uint8_t> ServerPing()
+std::vector<uint8_t> ServerPacketPing()
 {
 	std::vector<uint8_t> packet;
 	packet.push_back(0);
@@ -220,7 +187,7 @@ std::vector<uint8_t> ServerPacket(int id)
 	return packet;
 }
 
-std::string ServerStatus(std::vector<uint8_t> packet)
+std::string ServerPacketStatus(std::vector<uint8_t> packet)
 {
 	uint32_t numRead = 0, total = 0;
 	int length   = readVarInt(packet.data() + total, numRead);
@@ -239,121 +206,6 @@ std::string ServerStatus(std::vector<uint8_t> packet)
 	return json_response;
 }
 
-std::vector<uint8_t> base64_decode(std::string const& encoded_string) 
-{
-	static const std::string base64_chars = 
-             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-             "abcdefghijklmnopqrstuvwxyz"
-             "0123456789+/";
-	
-	static auto is_base64 = [](uint8_t c) -> bool {
-		return (isalnum(c) || (c == '+') || (c == '/'));
-	};
-
-	int in_len = encoded_string.size();
-	int i = 0;
-	int j = 0;
-	int in_ = 0;
-	uint8_t char_array_4[4], char_array_3[3];
-	std::vector<uint8_t> ret;
-
-	while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
-		char_array_4[i++] = encoded_string[in_]; in_++;
-		if (i ==4) {
-			for (i = 0; i <4; i++)
-				char_array_4[i] = base64_chars.find(char_array_4[i]);
-
-			char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-			char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-			char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
-
-			for (i = 0; (i < 3); i++)
-					ret.push_back(char_array_3[i]);
-			i = 0;
-		}
-	}
-
-	if (i) {
-		for (j = i; j <4; j++)
-			char_array_4[j] = 0;
-
-		for (j = 0; j <4; j++)
-			char_array_4[j] = base64_chars.find(char_array_4[j]);
-
-		char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-		char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-		char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
-
-		for (j = 0; (j < i - 1); j++) ret.push_back(char_array_3[j]);
-	}
-
-	return ret;
-}
-
-class VectorStream
-{
-	std::vector<uint8_t>& vector;
-	int index = 0;
-
-public:
-	VectorStream(std::vector<uint8_t>& vector)
-		: vector(vector)
-	{
-	}
-
-	std::string GetValue(std::string key)
-	{
-		MovePast(key);
-		std::string value((char*)&vector[index]);
-		index += value.size();
-		return value;
-	}
-
-	void MovePast(std::string key)
-	{
-		int i;
-
-		for (; index < vector.size(); index++)
-		{
-			for (i = 0; i < key.size(); i++)
-			{
-				if (vector[index + i] != key[i])
-					break;
-			}
-
-			if (i == key.size())
-				break;
-		}
-
-		index += key.size() + 1;
-	}
-
-	std::string GetValueDelim(uint8_t delim)
-	{
-		std::vector<char> value;
-
-		for (; index < vector.size(); index++)
-		{
-			value.push_back(vector[index]);
-
-			if (vector[index] == delim)
-				break;
-		}
-
-		return value.data();
-	}
-
-	void Ignore(int count)
-	{
-		index += count;
-	}
-
-	uint8_t Peek()
-	{
-		return vector[index];
-	}
-};
-
 void ServerConnection::Update()
 {
 	if (dontTry)
@@ -361,70 +213,70 @@ void ServerConnection::Update()
 	if (!window)
 		return;
 
-	auto handshake = ServerHandshake(1);
-	asio::write(server_socket, asio::buffer(handshake));
-	auto packet = ServerPacket(0);
-	asio::write(server_socket, asio::buffer(packet   ));
-	auto ping = ServerPing();
-	asio::write(server_socket, asio::buffer(ping     ));
-	std::vector<uint8_t> response(32767 + 10);
-	asio::read (server_socket, asio::buffer(response), asio::transfer_at_least(2));
+	if (IPCheck      () != State::Success) return;
+	if (ServerConnect() != State::Success) return;
 
-	std::vector<uint8_t> sessionID{0xFE,0xFD,0x09,0x00,0x00,0x00,0x01};
-	query_socket.send(asio::buffer(sessionID));
-	std::vector<uint8_t> challengeTokenResponse(50);
-	query_socket.receive(asio::buffer(challengeTokenResponse));
-	int32_t challengeToken = std::stoi(((char*)challengeTokenResponse.data() + 5));
-	std::vector<uint8_t> getstat{0xFE,0xFD,0x00,0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-	getstat[ 7] = (challengeToken >> 24) & 0xFF;
-	getstat[ 8] = (challengeToken >> 16) & 0xFF;
-	getstat[ 9] = (challengeToken >>  8) & 0xFF;
-	getstat[10] = (challengeToken >>  0) & 0xFF;
-	query_socket.send(asio::buffer(getstat));
-	std::vector<uint8_t> query_status(5000);
-	query_socket.receive(asio::buffer(query_status));
+	auto server_ping = ServerPing();
+	auto query_ping  = QueryPing ();
 
-	VectorStream iss(query_status);
-
-	auto status = json::parse(ServerStatus(response));
-
-	std::string image;
-
-	if (status.count("favicon"))
+	if (reconnected)
 	{
-		image = status["favicon"].get<std::string>();
-		image = image.substr(std::string("data:image/png;base64,").size());
+		auto server_decode = ServerPingDecode(server_ping);
+		
+		window->UpdateImage(server_decode.image      );
+		window->UpdateType (server_decode.version    );
+		window->UpdateMotd (server_decode.motd       );
+		window->UpdateMax  (server_decode.max_players);
+
+		if (query_connected)
+		{
+			auto[mod_name, plugin] = QueryPingGetPlugins(query_ping);
+
+			window->UpdateModName(mod_name);
+
+			for (auto name : plugin)
+			{
+				window->AddPlugin(name);
+				plugins[name] = 1;
+    		}
+		}
+
+		for(auto it = plugins.begin(); it != plugins.end();)
+		{
+		  	if (it->second == 0)
+		  	{
+				window->RemovePlugin(it->first);
+				it = plugins.erase(it);
+		  	}
+		  	else
+			{
+				it->second = 0;
+				++it;
+			}
+		}
 	}
 
-	int online = status["players"]["online"].get<int>();
-	int max    = status["players"]["max"   ].get<int>();
-
-	std::string gametype = iss.GetValue("gametype");
-	std::string game_id  = iss.GetValue("game_id");
-	std::string version  = iss.GetValue("version" );
-
-	window->update_motd(status["description"]["text"].get<std::string>());
-	window->update_players(online, max);
-	window->update_type(game_id + " " + version + " " + gametype);
-	window->update_image(base64_decode(image));
-
+	std::tuple<std::vector<std::string>, int> tuple;
 	std::vector<std::string> players;
-	iss.MovePast("\001player_");
-    iss.Ignore(1);
+	int online_players;
 
-    std::string name;
-	bool newName = false;
-
-	for(auto it = users.begin(); it != users.end(); it++)
+	if (query_connected)
 	{
-		it->second = 0;
+		tuple = QueryPingGetPlayers(query_ping);
+	}
+	else
+	{
+		tuple = ServerPingGetPlayers(server_ping);
 	}
 
-    while(iss.Peek() != '\0') 
+	players        = std::get<0>(tuple);
+	online_players = std::get<1>(tuple);
+
+	window->UpdateOnline(online_players);
+	
+    for (auto name : players)
 	{
-        name = iss.GetValueDelim('\0');
-		if (!users.contains(name))
-			window->add_user(name);
+		window->AddUser(name);
 		users[name] = 1;
     }
 
@@ -432,11 +284,12 @@ void ServerConnection::Update()
 	{
 	  	if (it->second == 0)
 	  	{
-			window->remove_user(it->first);
+			window->RemoveUser(it->first);
 			it = users.erase(it);
 	  	}
 	  	else
 		{
+			it->second = 0;
 			++it;
 		}
 	}
@@ -444,46 +297,62 @@ void ServerConnection::Update()
 
 void ServerConnection::SendCommand(std::string command)
 {
-	RCONPacket login;
-	memset(&login, 0, sizeof(login));
-	login.length = 10 + command.length();
-	login.id     = 1;
-	login.type   = 2;
-	memcpy(login.payload, command.data(), command.length());
+	if (command[0] != '/')
+		command = "/" + command;
+	window->AddCommand(command);
 
-	asio::write(rcon_socket, asio::buffer(&login, login.length + 4));
+	if (dontTry)
+	{
+		window->AddCommand("Trying to connect to server. Please wait.");
+		return;
+	}
+
+	if (!rcon_connected)
+	{
+		window->AddCommand("RCON did not connect. Can not send command.");
+		return;
+	}
+
+	RCONPacket packet;
+	memset(&packet, 0, sizeof(packet));
+	packet.length = 10 + command.length();
+	packet.id     = 1;
+	packet.type   = 2;
+	memcpy(packet.payload, command.data(), command.length());
+
+	asio::write(rcon_socket, asio::buffer(&packet, packet.length + 4));
 
 	std::vector<char> response;
 
-	asio::read(rcon_socket, asio::buffer(&login, sizeof(login)), asio::transfer_at_least(12));
+	asio::read(rcon_socket, asio::buffer(&packet, sizeof(packet)), asio::transfer_at_least(12));
 
-	if (login.id == 1 && login.type == 0)
+	if (packet.id == 1 && packet.type == 0)
 	{
-		for (int a = 0; a < login.length - 10; a++)
-			response.push_back(login.payload[a]);
+		for (int a = 0; a < packet.length - 10; a++)
+			response.push_back(packet.payload[a]);
 	}
 
-	login.length     = 10 ;
-	login.type       = 100;
-	login.payload[0] = 0  ;
-	login.payload[1] = 0  ;
+	packet.length     = 10 ;
+	packet.type       = 100;
+	packet.payload[0] = 0  ;
+	packet.payload[1] = 0  ;
 
-	asio::write(rcon_socket, asio::buffer(&login, login.length + 4));
+	asio::write(rcon_socket, asio::buffer(&packet, packet.length + 4));
 
 	do
 	{
-		asio::read(rcon_socket, asio::buffer(&login, sizeof(login)), asio::transfer_at_least(12));
+		asio::read(rcon_socket, asio::buffer(&packet, sizeof(packet)), asio::transfer_at_least(12));
 
-		if (login.id == 1 && login.type == 0)
+		if (packet.id == 1 && packet.type == 0)
 		{
-			if (memcmp(login.payload, "Unknown request 64", 18) == 0)
+			if (memcmp(packet.payload, "Unknown request 64", 18) == 0)
 				break;
 
-			for (int a = 0; a < login.length - 10; a++)
-				response.push_back(login.payload[a]);
+			for (int a = 0; a < packet.length - 10; a++)
+				response.push_back(packet.payload[a]);
 		}
 	}
-	while (login.type == 0);
+	while (packet.type == 0);
 	response.push_back(0);
 
 	int pos = command.find("help");
@@ -495,9 +364,288 @@ void ServerConnection::SendCommand(std::string command)
 		response = temp;
 	}
 
-	if (command[0] != '/')
-		command = "/" + command;
-
-	window->add_command(command);
-	window->add_command(response.data());
+	window->AddCommand(response.data());
 }
+
+ServerConnection::State ServerConnection::IPCheck()
+{
+	static std::string pre_ip = "";
+
+	QSettings settings;
+	
+	auto server_ip = settings.value("server_ip").toString().toStdString();
+
+	if (server_ip == pre_ip)
+	{
+		return State::NoAttempt;
+	}
+
+	std::regex ip_check("^(.+\\..{2,10}|localhost|(?:\\d{1,3}\\.){3}\\d{1,3})\\/?.*?$");
+	if (!std::regex_search(server_ip, ip_check))
+	{
+		pre_ip == server_ip;
+		return State::Failed;
+	}
+
+	pre_ip = "";
+	return State::Success;
+}
+
+ServerConnection::State ServerConnection::ServerConnect()
+{
+	static std::string pre_ip = "";
+
+	QSettings settings;
+	
+	auto server_ip   = settings.value("server_ip"  ).toString().toStdString();
+	auto server_port = settings.value("server_port").toInt   ()              ;
+
+	if (server_ip == pre_ip)
+	{
+		return State::NoAttempt;
+	}
+
+	try 
+	{
+		server_socket.close();
+    	tcp::resolver tcp_resolver(io_context);
+    	asio::connect(server_socket, tcp_resolver.resolve(server_ip, std::to_string(server_port)));
+	}
+	catch(const std::exception& e)
+	{
+		pre_ip == server_ip;
+		return State::Failed;
+	}
+
+	pre_ip = "";
+	return State::Success;
+}
+
+ServerConnection::State ServerConnection::RCONConnect()
+{
+	static int pre_port = -1;
+	static std::string pre_password = "";
+
+	QSettings settings;
+	
+	auto server_ip = settings.value("server_ip").toString().toStdString();
+	auto rcon_port = settings.value("rcon_port").toInt   ()              ;
+
+	if (rcon_port == pre_port)
+	{
+		return State::NoAttempt;
+	}
+
+	try 
+	{
+		rcon_socket.close();
+    	tcp::resolver tcp_resolver(io_context);
+    	asio::connect(rcon_socket, tcp_resolver.resolve(server_ip, std::to_string(rcon_port)));
+	}
+	catch(const std::exception& e)
+	{
+		rcon_connected = false;
+		pre_port = rcon_port;
+		return State::Failed;
+	}
+
+	pre_port = -1;
+	rcon_connected = true;
+	return State::Success;
+}
+
+ServerConnection::State ServerConnection::RCONLogin()
+{
+	static std::string pre_password = "";
+
+	QSettings settings;
+	
+	auto rcon_pass = settings.value("rcon_password").toString().toStdString();
+
+	if (rcon_pass == pre_password || !rcon_connected)
+	{
+		return State::NoAttempt;
+	}
+
+	RCONPacket packet;
+	memset(&packet, 0, sizeof(packet));
+	packet.length = 10 + rcon_pass.length();
+	packet.id     = 1;
+	packet.type   = 3;
+	memcpy(packet.payload, rcon_pass.data(), rcon_pass.length());
+
+	asio::write(rcon_socket, asio::buffer(&packet, packet.length + 4)                             );
+	asio::read (rcon_socket, asio::buffer(&packet, sizeof(packet)   ), asio::transfer_at_least(12));
+
+	if (packet.id == -1)
+	{
+		rcon_connected = false;
+		pre_password = rcon_pass;
+		return State::Failed;
+	}
+
+	pre_password = "";
+	rcon_connected = true;
+	return State::Success;
+}
+
+ServerConnection::State ServerConnection::QueryConnect()
+{
+	static int pre_port = -1;
+	static std::string pre_password = "";
+
+	QSettings settings;
+	
+	auto server_ip  = settings.value("server_ip" ).toString().toStdString();
+	auto query_port = settings.value("query_port").toInt   ()              ;
+
+	if (query_port == pre_port)
+	{
+		return State::NoAttempt;
+	}
+
+	try 
+	{
+		query_socket.close();
+    	udp::resolver udp_resolver(io_context);
+    	asio::connect(query_socket, udp_resolver.resolve(udp::v4(), server_ip, std::to_string(query_port)));
+		std::this_thread::sleep_for(500ms);
+		std::vector<uint8_t> sessionID{0x00,0x00,0x00,0x00,0x00};
+		query_socket.send(asio::buffer(sessionID));
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << "\n";
+
+		query_connected = false;
+		pre_port = query_port;
+		return State::Failed;
+	}
+
+	pre_port = -1;
+	query_connected = true;
+	return State::Success;
+}
+
+std::vector<uint8_t> ServerConnection::ServerPing()
+{
+	auto handshake = ServerPacketHandshake(1);
+	auto packet    = ServerPacket         (0);
+	auto ping      = ServerPacketPing     ( );
+
+	std::vector<uint8_t> response(32767 + 10);
+
+	asio::write(server_socket, asio::buffer(handshake));
+	asio::write(server_socket, asio::buffer(packet   ));
+	asio::write(server_socket, asio::buffer(ping     ));
+	asio::read (server_socket, asio::buffer(response), asio::transfer_at_least(2));
+
+	return response;
+}
+
+std::vector<uint8_t> ServerConnection::QueryPing()
+{
+	std::vector<uint8_t> sessionID{0xFE,0xFD,0x09,0x00,0x00,0x00,0x01};
+	std::vector<uint8_t> getstat  {0xFE,0xFD,0x00,0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+
+	std::vector<uint8_t> challengeTokenResponse(50  );
+	std::vector<uint8_t> query_status          (5000);
+
+	if (!query_connected)
+		return query_status;
+
+	try
+	{
+		query_socket.send   (asio::buffer(sessionID             ));
+		query_socket.receive(asio::buffer(challengeTokenResponse));
+
+		int32_t challengeToken = std::stoi(((char*)challengeTokenResponse.data() + 5));
+		getstat[ 7] = (challengeToken >> 24) & 0xFF;
+		getstat[ 8] = (challengeToken >> 16) & 0xFF;
+		getstat[ 9] = (challengeToken >>  8) & 0xFF;
+		getstat[10] = (challengeToken >>  0) & 0xFF;
+
+		query_socket.send   (asio::buffer(getstat     ));
+		query_socket.receive(asio::buffer(query_status));
+	}
+	catch(const std::exception& e)
+	{
+		QMessageBox::warning(
+			window,
+			"Warning",
+			"Query connection failed.\n"
+			"Some information may be missing.\n"
+		);
+		query_connected = false;
+	}
+
+	return query_status;
+}
+
+ServerPingData ServerConnection::ServerPingDecode(std::vector<uint8_t> packet)
+{
+	auto status = json::parse(ServerPacketStatus(packet));
+
+	ServerPingData data;
+
+	if (status.count("favicon"))
+	{
+		data.image = status["favicon"].get<std::string>();
+		data.image = data.image.substr(std::string("data:image/png;base64,").size());
+	}
+
+	data.online_players = status["players"]["online"].get<int>();
+	data.max_players    = status["players"]["max"   ].get<int>();
+
+	data.motd = status["description"]["text"].get<std::string>();
+
+	data.version = status["version"]["name"].get<std::string>();
+
+	return data;
+}
+
+std::tuple<std::vector<std::string>, int> ServerConnection::ServerPingGetPlayers(std::vector<uint8_t> packet)
+{
+	auto status = json::parse(ServerPacketStatus(packet));
+
+	int online = status["players"]["online"].get<int>();
+
+	return {{""},online};
+}
+
+std::tuple<std::vector<std::string>, int> ServerConnection::QueryPingGetPlayers(std::vector<uint8_t> packet)
+{
+	VectorStream iss(packet);
+	std::vector<std::string> players;
+
+	int online = std::stoi(iss.GetValue("numplayers"));
+
+	iss.MovePast("player_");
+	iss.Ignore(1);
+
+	while(iss.Peek() != '\0')
+	{
+		players.push_back(iss.GetValueDelim('\0'));
+	}
+
+	return {players, online};
+}
+
+std::tuple<std::string, std::vector<std::string>> ServerConnection::QueryPingGetPlugins(std::vector<uint8_t> packet)
+{
+	VectorStream iss(packet);
+	std::vector<std::string> plugins;
+	std::string mod_name;
+
+	iss.MovePast("plugins");
+	mod_name = iss.GetValueDelim({':', '\0'});
+
+	while(iss.Peek() == ' ')
+	{
+		iss.Ignore(1);
+		plugins.push_back(iss.GetValueDelim({';', '\0'}));
+	}
+
+	return {mod_name, plugins};
+}
+

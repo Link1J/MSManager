@@ -5,6 +5,7 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} C:/Qt/5.14.1/msvc2017_64)
 
 add_subdirectory(external/nlohmann_json)
+add_subdirectory(external/fmt-6.1.2    )
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -18,6 +19,7 @@ set(SOURCES
 	src/mainwindow.cpp
 	src/usermodel.cpp
 	src/settingsdialog.cpp
+	src/pluginmodel.cpp
 	# Add New Files Here!
 )
 
@@ -31,8 +33,8 @@ set(WINDOWS_DEF
 )
 
 find_package(Qt5 COMPONENTS Widgets Qml Quick REQUIRED)
-find_package(ZLIB REQUIRED)
-find_package(Threads REQUIRED)
+find_package(ZLIB                             REQUIRED)
+find_package(Threads                          REQUIRED)
 
 add_executable(msmanager
 	${SOURCES}
@@ -61,4 +63,5 @@ target_link_libraries(msmanager
 	nlohmann_json::nlohmann_json
 	ZLIB::ZLIB
 	Threads::Threads
+	fmt::fmt
 )
