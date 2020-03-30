@@ -1,8 +1,8 @@
 {
 	"files.associations": {
+		"*.masm": "masm",
 		"*.rasi": "css",
 		"*.cmake.in": "cmake",
-		"*.masm": "masm",
 		"*.ipp": "cpp",
 		"cctype": "cpp",
 		"clocale": "cpp",
@@ -101,7 +101,8 @@
 		"format": "cpp",
 		"qgroupbox": "cpp",
 		"qmainwindow": "cpp",
-		"qtablewidgetitem": "cpp"
+		"qtablewidgetitem": "cpp",
+		"qsettings": "cpp"
 	},
 	"C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
 }

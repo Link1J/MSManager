@@ -14,7 +14,7 @@
 			"cwd": "${workspaceFolder}/build",
 			"environment": [],
 			"externalConsole": false,
-			"visualizerFile": "c:\\Users\\jrair\\AppData\\Roaming\\Code - Insiders\\User\\workspaceStorage\\6b3d6d41fe707798df4d334ac7e0e04e\\tonka3000.qtvsctools\\qt.natvis.xml"
+			"visualizerFile": "c:\\Users\\jrair\\AppData\\Roaming\\Code - Insiders\\User\\workspaceStorage\\40c4bdb6b5da7b45b91c798a000d589a\\tonka3000.qtvsctools\\qt.natvis.xml"
 		},
 		{
 			"name": "(gdb) Launch",
@@ -34,7 +34,7 @@
 					"ignoreFailures": true
 				}
 			],
-			"visualizerFile": "c:\\Users\\jrair\\AppData\\Roaming\\Code - Insiders\\User\\workspaceStorage\\6b3d6d41fe707798df4d334ac7e0e04e\\tonka3000.qtvsctools\\qt.natvis.xml"
+			"visualizerFile": "c:\\Users\\jrair\\AppData\\Roaming\\Code - Insiders\\User\\workspaceStorage\\40c4bdb6b5da7b45b91c798a000d589a\\tonka3000.qtvsctools\\qt.natvis.xml"
 		}
 	]
 }

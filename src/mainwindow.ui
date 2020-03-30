@@ -61,7 +61,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="documentMode">
        <bool>true</bool>
@@ -209,8 +209,8 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>322</width>
-                  <height>208</height>
+                  <width>320</width>
+                  <height>232</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -493,7 +493,7 @@
      <x>0</x>
      <y>0</y>
      <width>638</width>
-     <height>30</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -506,9 +506,10 @@
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>Help</string>
+     <string>About</string>
     </property>
     <addaction name="action_about"/>
+    <addaction name="action_about_qt"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
@@ -529,6 +530,11 @@
   <action name="action_about">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="action_about_qt">
+   <property name="text">
+    <string>About Qt</string>
    </property>
   </action>
  </widget>
@@ -594,6 +600,22 @@
     <hint type="destinationlabel">
      <x>299</x>
      <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_about_qt</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>OpenAbout()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>318</x>
+     <y>202</y>
     </hint>
    </hints>
   </connection>

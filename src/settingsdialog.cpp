@@ -24,7 +24,8 @@
 #include <QSettings>
 
 SettingsDialog::SettingsDialog(QWidget *parent)
-  : QDialog(parent, Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint), ui(new Ui::SettingsDialog)
+  : QDialog(parent, Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint)
+  , ui(new Ui::SettingsDialog)
 {
 	ui->setupUi(this);
 	setAttribute(Qt::WA_DeleteOnClose);
