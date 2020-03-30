@@ -20,6 +20,7 @@ set(SOURCES
 	src/usermodel.cpp
 	src/settingsdialog.cpp
 	src/pluginmodel.cpp
+	src/userinfopanel.cpp
 	# Add New Files Here!
 )
 
@@ -54,6 +55,7 @@ target_compile_definitions(msmanager PUBLIC
 
 target_include_directories(msmanager PUBLIC
 	external/asio-1.12.2/include
+	src
 )
 
 target_link_libraries(msmanager 

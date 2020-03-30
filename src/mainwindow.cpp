@@ -5,7 +5,6 @@
 #include <QImageReader>
 #include <QMessageBox>
 #include <QSettings>
-#include <QInputDialog>
 
 #include <iostream>
 
@@ -27,13 +26,18 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->mod_name_group->hide();
 	ui->version_group ->hide();
 	ui->plugins_group ->hide();
+	ui->user_info     ->hide();
 
 	QSettings settings;
 	ui->server_ip->setText(settings.value("server_ip").toString());
 
+   	connect(ui->users_list->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(UserSelected(QItemSelection)));
+
 	connection.window = this;
 	connection.Reconnect();
 	startTimer(1000);
+
+	ui->user_info->AddServerConnection(&connection);
 }
 
 MainWindow::~MainWindow()
@@ -108,61 +112,10 @@ void MainWindow::RemoveUser(std::string user)
 	userlist->removeUser(user);
 }
 
-void MainWindow::UserContextMenu(QPoint point)
-{
-	QMenu* contextMenu = new QMenu(tr("Context menu"), this);
-
-	QAction* action1 = contextMenu->addAction("Kick");
-	QAction* action2 = contextMenu->addAction("Ban" );
-
-	QMenu* gamemode = contextMenu->addMenu("Gamemode");
-
-	QAction* action3 = gamemode->addAction("Creative" );
-	QAction* action4 = gamemode->addAction("Survival" );
-	QAction* action5 = gamemode->addAction("Spectator");
-
-	connect(action1, SIGNAL(triggered()), this, SLOT(UserKick     ()));
-	connect(action2, SIGNAL(triggered()), this, SLOT(UserBan      ()));
-	connect(action3, SIGNAL(triggered()), this, SLOT(UserCreative ()));
-	connect(action4, SIGNAL(triggered()), this, SLOT(UserSurvival ()));
-	connect(action5, SIGNAL(triggered()), this, SLOT(UserSpectator()));
-
-	auto index = ui->users_list->indexAt(point);
-	userSelected = userlist->getUser(index.row());
-
-	contextMenu->exec(mapToGlobal(point));
-}
-
 void MainWindow::timerEvent(QTimerEvent* event)
 {
 	connection.Update();
 }
-
-template <typename... Args>
-void MainWindow::SendUserCommand(std::string command_base, Args... args)
-{
-	std::string command = fmt::format(
-		command_base,
-		userSelected,
-		args...
-	);
-	userSelected = "";
-	connection.SendCommand(command);
-}
-
-void MainWindow::UserKick() 
-{ 
-	QString text = QInputDialog::getText(this, tr("Reason"), tr("Reason for kick:")); 
-	SendUserCommand("kick {0} {1}", text.toStdString()); 
-}
-void MainWindow::UserBan() 
-{ 
-	QString text = QInputDialog::getText(this, tr("Reason"), tr("Reason for ban:")); 
-	SendUserCommand("ban {0} {1}", text.toStdString()); 
-}
-void MainWindow::UserCreative () { SendUserCommand("gamemode creative {0}" ); }
-void MainWindow::UserSurvival () { SendUserCommand("gamemode survival {0}" ); }
-void MainWindow::UserSpectator() { SendUserCommand("gamemode spectator {0}"); }
 
 void MainWindow::OpenSettings() 
 {
@@ -203,4 +156,33 @@ void MainWindow::UpdateModName(std::string mod_name)
 		ui->mod_name_group->hide();
 		
 	ui->mod_name->setText(QString::fromStdString(mod_name));	
+}
+
+void MainWindow::UserSelected(QItemSelection selection)
+{
+	auto indexes = selection.indexes();
+	if(indexes.isEmpty()) 
+	{
+		ui->user_info->SetUser("");
+	} 
+	else 
+	{
+		auto index = indexes.at(0);
+		auto selected_user = userlist->getUser(index.row());
+		ui->user_info->SetUser(QString::fromStdString(selected_user));
+	}
+}
+
+void MainWindow::RCONDisabled()
+{
+	ui->tabs->setTabEnabled(2, false);
+
+	ui->user_info->RCONDisabled();
+}
+
+void MainWindow::RCONEnabled()
+{
+	ui->tabs->setTabEnabled(2, true);
+
+	ui->user_info->RCONEnabled();
 }

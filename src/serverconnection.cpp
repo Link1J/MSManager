@@ -123,6 +123,11 @@ void ServerConnection::Reconnect()
 				"RCON packet failed.\n"
 				"Sending commands will not be avilable.\n"
 			);
+		case State::NoAttempt:
+			window->RCONDisabled();
+			break;
+		case State::Success:
+			window->RCONEnabled();
 		}
 
 		reconnected = true;
@@ -295,22 +300,25 @@ void ServerConnection::Update()
 	}
 }
 
-void ServerConnection::SendCommand(std::string command)
+std::string ServerConnection::SendCommand(std::string command, bool print)
 {
 	if (command[0] != '/')
 		command = "/" + command;
-	window->AddCommand(command);
+	if (print)
+		window->AddCommand(command);
 
 	if (dontTry)
 	{
-		window->AddCommand("Trying to connect to server. Please wait.");
-		return;
+		if (print)
+			window->AddCommand("Trying to connect to server. Please wait.");
+		return "";
 	}
 
 	if (!rcon_connected)
 	{
-		window->AddCommand("RCON did not connect. Can not send command.");
-		return;
+		if (print)
+			window->AddCommand("RCON did not connect. Can not send command.");
+		return "";
 	}
 
 	RCONPacket packet;
@@ -364,7 +372,9 @@ void ServerConnection::SendCommand(std::string command)
 		response = temp;
 	}
 
-	window->AddCommand(response.data());
+	if (print)
+		window->AddCommand(response.data());
+	return response.data();
 }
 
 ServerConnection::State ServerConnection::IPCheck()

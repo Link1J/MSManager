@@ -25,6 +25,6 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex& index) const;
     std::string& getUser(size_t index);
-    const_iterator begin()const { return mydata.begin(); }
-    const_iterator end()const { return mydata.end(); }
+    const_iterator begin() const { return mydata.begin(); }
+    const_iterator end() const { return mydata.end(); }
 };

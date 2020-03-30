@@ -56,9 +56,11 @@ public:
 	MainWindow* window;
 	bool dontTry = false;
 
-	ServerConnection (                   );
-	~ServerConnection(                   );
-	void Update      (                   );
-	void Reconnect   (                   );
-	void SendCommand (std::string command);
+	ServerConnection ();
+	~ServerConnection();
+
+	void Update   ();
+	void Reconnect();
+
+	std::string SendCommand(std::string command, bool print = true);
 };

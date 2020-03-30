@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
-    <height>400</height>
+    <width>638</width>
+    <height>405</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -61,7 +61,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="documentMode">
        <bool>true</bool>
@@ -87,6 +87,18 @@
           </property>
           <item>
            <widget class="QGroupBox" name="groupBox_3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>342</width>
+              <height>321</height>
+             </size>
+            </property>
             <property name="title">
              <string>Server Info</string>
             </property>
@@ -178,10 +190,13 @@
              <item>
               <widget class="QScrollArea" name="scrollArea">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
                </property>
                <property name="widgetResizable">
                 <bool>true</bool>
@@ -195,7 +210,7 @@
                   <x>0</x>
                   <y>0</y>
                   <width>322</width>
-                  <height>203</height>
+                  <height>208</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -205,7 +220,7 @@
                  <item>
                   <widget class="QGroupBox" name="version_group">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -236,7 +251,7 @@
                  <item>
                   <widget class="QGroupBox" name="mod_name_group">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -280,7 +295,17 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <widget class="QListView" name="plugins_list"/>
+            <widget class="QListView" name="plugins_list">
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::NoSelection</enum>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -382,24 +407,27 @@
               <height>0</height>
              </size>
             </property>
-            <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
+            <property name="focusPolicy">
+             <enum>Qt::ClickFocus</enum>
             </property>
             <property name="sizeAdjustPolicy">
              <enum>QAbstractScrollArea::AdjustToContents</enum>
+            </property>
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="viewMode">
+             <enum>QListView::ListMode</enum>
             </property>
            </widget>
           </item>
          </layout>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox_4">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+         <widget class="UserInfoPanel" name="user_info">
           <property name="title">
            <string/>
           </property>
@@ -419,6 +447,9 @@
           </property>
           <item>
            <widget class="QListWidget" name="command_list">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="sizeAdjustPolicy">
              <enum>QAbstractScrollArea::AdjustToContents</enum>
             </property>
@@ -461,7 +492,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>540</width>
+     <width>638</width>
      <height>30</height>
     </rect>
    </property>
@@ -501,6 +532,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>UserInfoPanel</class>
+   <extends>QGroupBox</extends>
+   <header>userinfopanel.hpp</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>command_list</tabstop>
   <tabstop>users_list</tabstop>
@@ -522,23 +561,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>329</x>
-     <y>-9</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>users_list</sender>
-   <signal>customContextMenuRequested(QPoint)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>UserContextMenu(QPoint)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>59</x>
-     <y>160</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>152</x>
-     <y>-11</y>
+     <y>0</y>
     </hint>
    </hints>
   </connection>
@@ -577,7 +600,6 @@
  </connections>
  <slots>
   <slot>SendCommand()</slot>
-  <slot>UserContextMenu(QPoint)</slot>
   <slot>OpenSettings()</slot>
   <slot>OpenAbout()</slot>
  </slots>

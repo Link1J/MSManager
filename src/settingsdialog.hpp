@@ -11,8 +11,8 @@ class SettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    SettingsDialog(QWidget *parent = 0);
-    virtual ~SettingsDialog();
+    SettingsDialog (QWidget *parent = 0);
+    ~SettingsDialog(                   );
 
 public slots:
 
