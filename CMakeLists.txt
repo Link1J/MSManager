@@ -34,7 +34,6 @@ set(WINDOWS_DEF
 )
 
 find_package(Qt5 COMPONENTS Widgets Qml Quick REQUIRED)
-find_package(ZLIB                             REQUIRED)
 find_package(Threads                          REQUIRED)
 
 add_executable(msmanager
@@ -63,7 +62,6 @@ target_link_libraries(msmanager
 	Qt5::Gui
 	Qt5::Widgets
 	nlohmann_json::nlohmann_json
-	ZLIB::ZLIB
 	Threads::Threads
 	fmt::fmt
 )
