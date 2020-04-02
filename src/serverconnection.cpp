@@ -411,7 +411,7 @@ ServerConnection::State ServerConnection::IPCheck()
 	std::regex ip_check("^(.+\\..{2,10}|localhost|(?:\\d{1,3}\\.){3}\\d{1,3})\\/?.*?$");
 	if (!std::regex_search(server_ip, ip_check))
 	{
-		pre_ip == server_ip;
+		pre_ip = server_ip;
 		return State::Failed;
 	}
 
@@ -441,7 +441,7 @@ ServerConnection::State ServerConnection::ServerConnect()
 	}
 	catch(const std::exception& e)
 	{
-		pre_ip == server_ip;
+		pre_ip = server_ip;
 		return State::Failed;
 	}
 
@@ -543,8 +543,6 @@ ServerConnection::State ServerConnection::QueryConnect()
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << e.what() << "\n";
-
 		query_connected = false;
 		pre_port = query_port;
 		return State::Failed;

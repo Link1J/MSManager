@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QGroupBox>
+#include <QMainWindow>
 #include <QScopedPointer>
 #include <QTableWidgetItem>
 #include <QTimer>
@@ -29,7 +29,7 @@ namespace Ui {
     class UserInfoPanel;
 }
 
-class UserInfoPanel : public QGroupBox
+class UserInfoPanel : public QMainWindow
 {
     Q_OBJECT
 
@@ -43,21 +43,16 @@ public:
     void RCONEnabled ();
 
 public slots:
-	void SetUser        (QString          );
+	void SetUser (QString);
     
-    void UserKick       (                 );
-    void UserBan        (                 );
+    void UserKick(       );
+    void UserBan (       );
 
-    void ScoreboardValue(QTableWidgetItem*);
-    void ScoreboardEnter(QTableWidgetItem*);
-
-    void Update         (                 );
+    void Update  (       );
 
 private:    
     template <typename... Args>
     std::string SendUserCommand(std::string command_base, Args... args);
-
-	void UpdatePlayerScoreboard();
 
     QScopedPointer<Ui::UserInfoPanel> ui;
     ServerConnection* connection;

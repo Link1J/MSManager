@@ -18,6 +18,8 @@
 
 #include "mainwindow.hpp"
 #include <QApplication>
+#include <QSettings>
+#include <QStyleFactory>
 
 int main(int argc, char *argv[])
 {
@@ -26,7 +28,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("Link1J");
     QCoreApplication::setOrganizationDomain("link1j.me");
     QCoreApplication::setApplicationName("msmanager");
-
+    
     MainWindow main_window;
     main_window.show();
 

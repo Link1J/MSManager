@@ -29,12 +29,14 @@
 #include <fmt/format.h>
 
 #include "settingsdialog.hpp"
+#include "userinfopanel.hpp"
 
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
   , ui(new Ui::MainWindow)
   , userlist(new UserModel)
   , pluginlist(new PluginModel)
+  , user_info(new UserInfoPanel(this))
 {
     ui->setupUi(this);
 
@@ -43,8 +45,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 	ui->mod_name_group->hide();
 	ui->version_group ->hide();
-	ui->plugins_group ->hide();
-	ui->user_info     ->hide();
+
+	ui->tabs->setTabEnabled(3, false);
 
 	QSettings settings;
 	ui->server_ip->setText(settings.value("server_ip").toString());
@@ -55,7 +57,8 @@ MainWindow::MainWindow(QWidget *parent)
 	connection.Reconnect();
 	startTimer(1000);
 
-	ui->user_info->AddServerConnection(&connection);
+	user_info->AddServerConnection(&connection);
+	//user_info->setModal(true);
 }
 
 MainWindow::~MainWindow()
@@ -155,7 +158,7 @@ void MainWindow::AddPlugin(std::string plugin)
 	pluginlist->addPlugin(plugin);
 	
 	if (pluginlist->rowCount() > 0)
-		ui->plugins_group->show();
+		ui->tabs->setTabEnabled(3, true);
 }
 
 void MainWindow::RemovePlugin(std::string plugin)
@@ -163,7 +166,7 @@ void MainWindow::RemovePlugin(std::string plugin)
 	pluginlist->removePlugin(plugin);
 
 	if (pluginlist->rowCount() <= 0)
-		ui->plugins_group->hide();
+		ui->tabs->setTabEnabled(3, false);
 }
 
 void MainWindow::UpdateModName(std::string mod_name)
@@ -179,15 +182,19 @@ void MainWindow::UpdateModName(std::string mod_name)
 void MainWindow::UserSelected(QItemSelection selection)
 {
 	auto indexes = selection.indexes();
-	if(indexes.isEmpty()) 
+	if (indexes.isEmpty()) 
 	{
-		ui->user_info->SetUser("");
+		user_info->hide();
 	} 
 	else 
 	{
 		auto index = indexes.at(0);
 		auto selected_user = userlist->getUser(index.row());
-		ui->user_info->SetUser(QString::fromStdString(selected_user));
+		ui->users_list->clearSelection();
+		
+		user_info->SetUser(QString::fromStdString(selected_user));
+
+    	user_info->show();
 	}
 }
 
@@ -195,12 +202,12 @@ void MainWindow::RCONDisabled()
 {
 	ui->tabs->setTabEnabled(2, false);
 
-	ui->user_info->RCONDisabled();
+	//ui->user_info->RCONDisabled();
 }
 
 void MainWindow::RCONEnabled()
 {
 	ui->tabs->setTabEnabled(2, true);
 
-	ui->user_info->RCONEnabled();
+	//ui->user_info->RCONEnabled();
 }

@@ -36,7 +36,7 @@ std::vector<std::string> split(const std::string& s, char delimiter)
 }
 
 UserInfoPanel::UserInfoPanel(QWidget* parent)
-	: QGroupBox(parent)
+	: QMainWindow(parent)
 	, timer(new QTimer(this))
 	, ui(new Ui::UserInfoPanel)
 {
@@ -72,41 +72,26 @@ void UserInfoPanel::SetUser(QString user)
     	timer->start(5000);
 	}
 
-	setTitle(user);
-	UpdatePlayerScoreboard();
+	setWindowTitle("User Info - " + user);
+	Update();
 }
 
 void UserInfoPanel::Update()
 {
-	UpdatePlayerScoreboard();
-}
+	std::vector<std::string> values;
 
-void UserInfoPanel::ScoreboardValue(QTableWidgetItem* value_item)
-{
-	if (in_scoreboard_update)
-		return;
-	if (value_item->column() != 1)
-		return;
-
-	int row = value_item->row();
-	auto name_item = ui->scoreboard_table->item(row, 0);
-
-	auto name  = name_item ->text().toStdString();
-	auto value = value_item->text().toStdString();
-
-	SendUserCommand("scoreboard players set {} {} {}", name, value);
-
-	dont_update_scoreboard = false;
-
-	UpdatePlayerScoreboard();
-}
-
-void UserInfoPanel::ScoreboardEnter(QTableWidgetItem* value_item)
-{
-	if (value_item->column() != 1)
-		return;
-
-	dont_update_scoreboard = true;
+	values = split(SendUserCommand("scoreboard players get {} {}", "Air"   ), ' ');
+	ui->air   ->setText(QString::fromStdString(values[2]));
+	values = split(SendUserCommand("scoreboard players get {} {}", "XP"    ), ' ');
+	ui->xp    ->setText(QString::fromStdString(values[2]));
+	values = split(SendUserCommand("scoreboard players get {} {}", "Health"), ' ');
+	ui->health->setText(QString::fromStdString(values[2]));
+	values = split(SendUserCommand("scoreboard players get {} {}", "Armor" ), ' ');
+	ui->armor ->setText(QString::fromStdString(values[2]));
+	values = split(SendUserCommand("scoreboard players get {} {}", "Food"  ), ' ');
+	ui->food  ->setText(QString::fromStdString(values[2]));
+	values = split(SendUserCommand("scoreboard players get {} {}", "Deaths"), ' ');
+	ui->deaths->setText(QString::fromStdString(values[2]));
 }
 
 template <typename... Args>
@@ -145,41 +130,6 @@ void UserInfoPanel::UserBan()
 		SendUserCommand("ban {0} {1}", text.toStdString());
 	else
 		SendUserCommand("ban {0}");
-}
-
-void UserInfoPanel::UpdatePlayerScoreboard()
-{
-	if (selected_user == "")
-		return;
-	if (dont_update_scoreboard)
-		return;
-
-	in_scoreboard_update = true;
-
-	std::vector<std::string> scoreboard_objectives = split(SendUserCommand("scoreboard players list {0}"), '[');
-	scoreboard_objectives.erase(scoreboard_objectives.begin());
-
-	ui->scoreboard_table->setRowCount(scoreboard_objectives.size());
-
-	int row = 0;
-	for (auto objective : scoreboard_objectives)
-	{
-		auto values = split(objective, ':');
-		values[0].erase(values[0].end  () - 1);
-		values[1].erase(values[1].begin()    );
-
-		auto name  = new QTableWidgetItem(QString::fromStdString(values[0]));
-		auto value = new QTableWidgetItem(QString::fromStdString(values[1]));
-
-		name->setFlags(name->flags() & ~Qt::ItemIsEditable);
-
-		ui->scoreboard_table->setItem(row, 0, name );
-		ui->scoreboard_table->setItem(row, 1, value);
-
-		row++;
-	}
-
-	in_scoreboard_update = false;
 }
 
 void UserInfoPanel::RCONDisabled()

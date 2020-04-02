@@ -102,7 +102,9 @@
 		"qgroupbox": "cpp",
 		"qmainwindow": "cpp",
 		"qtablewidgetitem": "cpp",
-		"qsettings": "cpp"
+		"qsettings": "cpp",
+		"qapplication": "cpp",
+		"qstylefactory": "cpp"
 	},
 	"C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
 }

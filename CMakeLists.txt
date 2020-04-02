@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.7.0)
 project(msmanager VERSION 0.1.0)
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
@@ -29,14 +29,18 @@ set(UI_SOURCES
 	# Add New Files Here!
 )
 
-set(WINDOWS_DEF
-	"_WIN32_WINNT=0x601"
-)
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Threads                REQUIRED)
 
-find_package(Qt5 COMPONENTS Widgets Qml Quick REQUIRED)
-find_package(Threads                          REQUIRED)
+set(WINDOWS_DEF "_WIN32_WINNT=0x601")
 
-add_executable(msmanager
+if (APPLE)
+    set(OS_BUNDLE MACOSX_BUNDLE)
+elseif (WIN32)
+	set(OS_BUNDLE WIN32)
+endif()
+
+add_executable(msmanager ${OS_BUNDLE}
 	${SOURCES}
 	${UI_SOURCES}
 )
@@ -46,7 +50,6 @@ set_target_properties(msmanager PROPERTIES
 	CXX_STANDARD_REQUIRED YES
 	CXX_EXTENSIONS NO
 )
-
 
 target_compile_definitions(msmanager PUBLIC 
 	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:${WINDOWS_DEF}>
