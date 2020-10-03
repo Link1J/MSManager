@@ -1,3 +1,12 @@
 [submodule "externals/ljh"]
 	path = externals/ljh
 	url = https://github.com/Link1J/ljh.git
+[submodule "externals/fmt"]
+	path = externals/fmt
+	url = https://github.com/fmtlib/fmt.git
+[submodule "externals/asio"]
+	path = externals/asio
+	url = https://github.com/chriskohlhoff/asio.git
+[submodule "externals/json"]
+	path = externals/json
+	url = https://github.com/nlohmann/json.git

@@ -1,15 +1,14 @@
-cmake_minimum_required(VERSION 3.7.0)
+cmake_minimum_required(VERSION 3.11.0)
 project(msmanager VERSION 0.1.0)
 
 set(QT_VERSION_FIND "5.*.*")
-
 include(externals/ljh/cmake/QtPrefixFinder.cmake)
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${QT_PREFIX})
 
-add_subdirectory(externals/nlohmann_json)
-add_subdirectory(externals/fmt-6.1.2    )
+add_subdirectory(externals/json)
+add_subdirectory(externals/fmt )
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -60,7 +59,7 @@ target_compile_definitions(msmanager PUBLIC
 )
 
 target_include_directories(msmanager PUBLIC
-    externals/asio-1.12.2/include
+    externals/asio/asio/include
     src
 )
 
