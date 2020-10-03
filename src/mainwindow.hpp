@@ -62,8 +62,12 @@ public slots:
 
     void OpenSettings(              );
     void OpenAbout   (              );
+    void OpenAboutQt (              );
 
     void UserSelected(QItemSelection);
+
+    void CreateCriticalMessageBox(QString, QString);
+    void CreateWarningMessageBox(QString, QString);
     
 protected:
     void timerEvent(QTimerEvent* event);

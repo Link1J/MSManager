@@ -589,7 +589,7 @@
    <sender>action_about_qt</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>OpenAbout()</slot>
+   <slot>OpenAboutQt()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>

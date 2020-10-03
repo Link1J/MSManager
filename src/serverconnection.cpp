@@ -69,10 +69,11 @@ void ServerConnection::Reconnect()
 		switch (IPCheck())
 		{
 		case State::Failed:
-			QMessageBox::critical(
-				window,
-				"ERROR",
-				"IP Address is not valid.\n"
+			QMetaObject::invokeMethod(
+				window, "CreateCriticalMessageBox",
+				Qt::BlockingQueuedConnection,
+				Q_ARG(QString, "ERROR"),
+				Q_ARG(QString, "IP Address is not valid.\n")
 			);
 
 			if (!window)
@@ -91,10 +92,11 @@ void ServerConnection::Reconnect()
 		switch (ServerConnect())
 		{
 		case State::Failed:
-			QMessageBox::critical(
-				window,
-				"ERROR",
-				"Failed to connect to server.\n"
+			QMetaObject::invokeMethod(
+				window, "CreateCriticalMessageBox",
+				Qt::BlockingQueuedConnection,
+				Q_ARG(QString, "ERROR"),
+				Q_ARG(QString, "Failed to connect to server.\n")
 			);
 
 			if (!window)
@@ -113,33 +115,36 @@ void ServerConnection::Reconnect()
 		switch (QueryConnect())
 		{
 		case State::Failed:
-			QMessageBox::warning(
-				window,
-				"Warning",
-				"Query connection failed.\n"
-				"Some information may be missing.\n"
+			QMetaObject::invokeMethod(
+				window, "CreateWarningMessageBox",
+				Qt::BlockingQueuedConnection,
+				Q_ARG(QString, "Warning"),
+				Q_ARG(QString, "Query connection failed.\n"
+				"Some information may be missing.\n")
 			);
 		}
 
 		switch (RCONConnect())
 		{
 		case State::Failed:
-			QMessageBox::warning(
-				window,
-				"Warning",
-				"RCON connection failed.\n"
-				"Sending commands will not be avilable.\n"
+			QMetaObject::invokeMethod(
+				window, "CreateWarningMessageBox",
+				Qt::BlockingQueuedConnection,
+				Q_ARG(QString, "Warning"),
+				Q_ARG(QString, "RCON connection failed.\n"
+				"Sending commands will not be avilable.\n")
 			);
 		}
 
 		switch (RCONLogin())
 		{
 		case State::Failed:
-			QMessageBox::warning(
-				window,
-				"Warning",
-				"RCON packet failed.\n"
-				"Sending commands will not be avilable.\n"
+			QMetaObject::invokeMethod(
+				window, "CreateWarningMessageBox",
+				Qt::BlockingQueuedConnection,
+				Q_ARG(QString, "Warning"),
+				Q_ARG(QString, "RCON packet failed.\n"
+				"Sending commands will not be avilable.\n")
 			);
 		case State::NoAttempt:
 			window->RCONDisabled();

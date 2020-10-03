@@ -153,6 +153,11 @@ void MainWindow::OpenAbout()
 	QMessageBox::about(this, "About", "MSManager\nCreated by: Link1J\n");
 }
 
+void MainWindow::OpenAboutQt() 
+{
+	QMessageBox::aboutQt(this);
+}
+
 void MainWindow::AddPlugin(std::string plugin)
 {
 	pluginlist->addPlugin(plugin);
@@ -210,4 +215,22 @@ void MainWindow::RCONEnabled()
 	ui->tabs->setTabEnabled(2, true);
 
 	//ui->user_info->RCONEnabled();
+}
+
+void MainWindow::CreateCriticalMessageBox(QString title, QString message)
+{
+	QMessageBox::critical(
+		this,
+		title,
+		message
+	);
+}
+
+void MainWindow::CreateWarningMessageBox(QString title, QString message)
+{
+	QMessageBox::warning(
+		this,
+		title,
+		message
+	);
 }
