@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.11.0)
-project(msmanager VERSION 0.1.0)
+project(msmanager VERSION 0.1.0.0)
 
 set(QT_VERSION_FIND "5.*.*")
-include(externals/ljh/cmake/QtPrefixFinder.cmake)
+include(externals/ljh/cmake/Qt.cmake)
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${QT_PREFIX})
@@ -15,6 +15,26 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
+
+set(CPACK_PACKAGE_NAME "Minecraft Server Manager")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Minecraft Server Manager")
+set(CPACK_PACKAGE_VENDOR "Link1J")
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://link1j.me/")
+set(CPACK_VERBATIM_VARIABLES true)
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(CPACK_PACKAGE_VERSION_TWEAK ${PROJECT_VERSION_TWEAK})
+set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/assets/appicon.png")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
+
+set(CPACK_WIX_UPGRADE_GUID "04677607-C7E8-434D-BF16-0DBC27B6E539")
+set(CPACK_WIX_PRODUCT_ICON "${CMAKE_SOURCE_DIR}/assets/appicon-64x64.png")
+
+set(CMAKE_INSTALL_UCRT_LIBRARIES FALSE)
+
+include(CPack)
+include(InstallRequiredSystemLibraries)
 
 set(SOURCES
     src/main.cpp
@@ -35,13 +55,13 @@ set(UI_SOURCES
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Threads                REQUIRED)
 
-set(WINDOWS_DEF "_WIN32_WINNT=0x601")
-
 if (APPLE)
     set(OS_BUNDLE MACOSX_BUNDLE)
 elseif (WIN32)
     set(OS_BUNDLE WIN32)
 endif()
+
+set(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION 10.0.18363.0)
 
 add_executable(msmanager ${OS_BUNDLE}
     ${SOURCES}
@@ -55,8 +75,15 @@ set_target_properties(msmanager PROPERTIES
 )
 
 target_compile_definitions(msmanager PUBLIC 
-    $<$<COMPILE_LANG_AND_ID:CXX,MSVC>:${WINDOWS_DEF}>
+    "_WIN32_WINNT=0x0601"
+    "WINVER=0x0601"
+    $<$<PLATFORM_ID:WindowsStore>:"ASIO_WINDOWS_APP=1">
 )
+
+if (WIN32 AND NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
+    set(TEST ON)
+endif()
+message("${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION} ${CMAKE_SYSTEM_VERSION} ${TEST}")
 
 target_include_directories(msmanager PUBLIC
     externals/asio/asio/include
@@ -71,3 +98,13 @@ target_link_libraries(msmanager
     Threads::Threads
     fmt::fmt
 )
+
+if (WIN32 AND NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
+    add_custom_command(TARGET msmanager POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/windeployqt"
+        COMMAND Qt::windeployqt --dir "${CMAKE_BINARY_DIR}/windeployqt" "$<TARGET_FILE:msmanager>" --verbose 0 --no-compiler-runtime
+        COMMENT "Deploying Qt..."
+    )
+    install(TARGETS msmanager RUNTIME DESTINATION .)
+    install(DIRECTORY "${CMAKE_BINARY_DIR}/windeployqt" DESTINATION .)
+endif()

@@ -40,14 +40,15 @@ public:
     MainWindow (QWidget *parent = 0);
     ~MainWindow(                   );
 
-	void UpdateMotd   (std::string motd       );
-	void UpdateOnline (int online             );
-	void UpdateMax    (int max                );
-	void UpdateImage  (std::string image      );
-	void UpdateType   (std::string server_type);
-	void UpdateModName(std::string mod_name   );
+public slots:
+    void UpdateMotd   (std::string motd       );
+    void UpdateOnline (int online             );
+    void UpdateMax    (int max                );
+    void UpdateImage  (std::string image      );
+    void UpdateType   (std::string server_type);
+    void UpdateModName(std::string mod_name   );
 
-	void AddCommand   (std::string command    );
+    void AddCommand   (std::string command    );
     void AddUser      (std::string user       );
     void AddPlugin    (std::string plugin     );
 
@@ -57,7 +58,6 @@ public:
     void RCONDisabled (                       );
     void RCONEnabled  (                       );
 
-public slots:
     void SendCommand (              );
 
     void OpenSettings(              );
@@ -67,7 +67,7 @@ public slots:
     void UserSelected(QItemSelection);
 
     void CreateCriticalMessageBox(QString, QString);
-    void CreateWarningMessageBox(QString, QString);
+    void CreateWarningMessageBox (QString, QString);
     
 protected:
     void timerEvent(QTimerEvent* event);

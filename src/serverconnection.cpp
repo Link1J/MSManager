@@ -71,7 +71,7 @@ void ServerConnection::Reconnect()
 		case State::Failed:
 			QMetaObject::invokeMethod(
 				window, "CreateCriticalMessageBox",
-				Qt::BlockingQueuedConnection,
+				Qt::QueuedConnection,
 				Q_ARG(QString, "ERROR"),
 				Q_ARG(QString, "IP Address is not valid.\n")
 			);
@@ -79,11 +79,11 @@ void ServerConnection::Reconnect()
 			if (!window)
 				return;
 
-			window->UpdateMotd("");
-			window->UpdateOnline(0);
-			window->UpdateMax(0);
-			window->UpdateType("");
-			window->UpdateImage({});
+			QMetaObject::invokeMethod(window, "UpdateMotd"  , Qt::QueuedConnection, Q_ARG(std::string, ""));
+			QMetaObject::invokeMethod(window, "UpdateOnline", Qt::QueuedConnection, Q_ARG(int        ,  0));
+			QMetaObject::invokeMethod(window, "UpdateMax"   , Qt::QueuedConnection, Q_ARG(int        ,  0));
+			QMetaObject::invokeMethod(window, "UpdateType"  , Qt::QueuedConnection, Q_ARG(std::string, ""));
+			QMetaObject::invokeMethod(window, "UpdateImage" , Qt::QueuedConnection, Q_ARG(std::string, {}));
 
 		case State::NoAttempt:
 			return;
@@ -94,7 +94,7 @@ void ServerConnection::Reconnect()
 		case State::Failed:
 			QMetaObject::invokeMethod(
 				window, "CreateCriticalMessageBox",
-				Qt::BlockingQueuedConnection,
+				Qt::QueuedConnection,
 				Q_ARG(QString, "ERROR"),
 				Q_ARG(QString, "Failed to connect to server.\n")
 			);
@@ -102,11 +102,11 @@ void ServerConnection::Reconnect()
 			if (!window)
 				return;
 
-			window->UpdateMotd("");
-			window->UpdateOnline(0);
-			window->UpdateMax(0);
-			window->UpdateType("");
-			window->UpdateImage({});
+			QMetaObject::invokeMethod(window, "UpdateMotd"  , Qt::QueuedConnection, Q_ARG(std::string, ""));
+			QMetaObject::invokeMethod(window, "UpdateOnline", Qt::QueuedConnection, Q_ARG(int        ,  0));
+			QMetaObject::invokeMethod(window, "UpdateMax"   , Qt::QueuedConnection, Q_ARG(int        ,  0));
+			QMetaObject::invokeMethod(window, "UpdateType"  , Qt::QueuedConnection, Q_ARG(std::string, ""));
+			QMetaObject::invokeMethod(window, "UpdateImage" , Qt::QueuedConnection, Q_ARG(std::string, {}));
 
 		case State::NoAttempt:
 			return;
@@ -117,7 +117,7 @@ void ServerConnection::Reconnect()
 		case State::Failed:
 			QMetaObject::invokeMethod(
 				window, "CreateWarningMessageBox",
-				Qt::BlockingQueuedConnection,
+				Qt::QueuedConnection,
 				Q_ARG(QString, "Warning"),
 				Q_ARG(QString, "Query connection failed.\n"
 				"Some information may be missing.\n")
@@ -129,7 +129,7 @@ void ServerConnection::Reconnect()
 		case State::Failed:
 			QMetaObject::invokeMethod(
 				window, "CreateWarningMessageBox",
-				Qt::BlockingQueuedConnection,
+				Qt::QueuedConnection,
 				Q_ARG(QString, "Warning"),
 				Q_ARG(QString, "RCON connection failed.\n"
 				"Sending commands will not be avilable.\n")
@@ -141,16 +141,16 @@ void ServerConnection::Reconnect()
 		case State::Failed:
 			QMetaObject::invokeMethod(
 				window, "CreateWarningMessageBox",
-				Qt::BlockingQueuedConnection,
+				Qt::QueuedConnection,
 				Q_ARG(QString, "Warning"),
 				Q_ARG(QString, "RCON packet failed.\n"
 				"Sending commands will not be avilable.\n")
 			);
 		case State::NoAttempt:
-			window->RCONDisabled();
+			QMetaObject::invokeMethod(window, "RCONDisabled", Qt::QueuedConnection);
 			break;
 		case State::Success:
-			window->RCONEnabled();
+			QMetaObject::invokeMethod(window, "RCONEnabled", Qt::QueuedConnection);
 		}
 
 		reconnected = true;

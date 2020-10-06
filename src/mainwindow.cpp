@@ -23,6 +23,7 @@
 #include <QImageReader>
 #include <QMessageBox>
 #include <QSettings>
+#include <QPlatformSurfaceEvent>
 
 #include <iostream>
 

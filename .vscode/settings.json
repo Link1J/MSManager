@@ -1,7 +1,9 @@
 {
 	"files.associations": {
-		"*.masm": "masm",
 		"*.rasi": "css",
+		"*.A09": "assembly",
+		"*.mdx": "markdown",
+		"*.masm": "masm",
 		"*.cmake.in": "cmake",
 		"*.ipp": "cpp",
 		"cctype": "cpp",
@@ -104,7 +106,21 @@
 		"qtablewidgetitem": "cpp",
 		"qsettings": "cpp",
 		"qapplication": "cpp",
-		"qstylefactory": "cpp"
+		"qstylefactory": "cpp",
+		"any": "cpp",
+		"charconv": "cpp",
+		"compare": "cpp",
+		"coroutine": "cpp",
+		"csetjmp": "cpp",
+		"cuchar": "cpp",
+		"execution": "cpp",
+		"filesystem": "cpp",
+		"numbers": "cpp",
+		"ranges": "cpp",
+		"scoped_allocator": "cpp",
+		"span": "cpp",
+		"stack": "cpp",
+		"qplatformsurfaceevent": "cpp"
 	},
 	"C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
 }
