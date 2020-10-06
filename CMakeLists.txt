@@ -86,7 +86,6 @@ endif()
 target_include_directories(msmanager PUBLIC
     externals/asio/asio/include
     src
-    build/msmanager_autogen/include
 )
 
 target_link_libraries(msmanager 
