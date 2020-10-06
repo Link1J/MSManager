@@ -167,7 +167,7 @@ void FillOutPacket(std::vector<uint8_t>& packet, int id)
 	auto packetID = writeVarInt(id);
 	packet.insert(packet.begin(), packetID.begin(), packetID.end());
 
-	auto length = writeVarInt(packet.size());
+	auto length = writeVarInt((uint32_t)packet.size());
 	packet.insert(packet.begin(), length.begin(), length.end());
 }
 
@@ -266,17 +266,17 @@ void ServerConnection::Update()
 			{
 				window->AddPlugin(name);
 				plugins[name] = 1;
-    		}
+			}
 		}
 
 		for(auto it = plugins.begin(); it != plugins.end();)
 		{
-		  	if (it->second == 0)
-		  	{
+			if (it->second == 0)
+			{
 				window->RemovePlugin(it->first);
 				it = plugins.erase(it);
-		  	}
-		  	else
+			}
+			else
 			{
 				it->second = 0;
 				++it;
@@ -302,20 +302,20 @@ void ServerConnection::Update()
 
 	window->UpdateOnline(online_players);
 	
-    for (auto name : players)
+	for (auto name : players)
 	{
 		window->AddUser(name);
 		users[name] = 1;
-    }
+	}
 
 	for(auto it = users.begin(); it != users.end();)
 	{
-	  	if (it->second == 0)
-	  	{
+		if (it->second == 0)
+		{
 			window->RemoveUser(it->first);
 			it = users.erase(it);
-	  	}
-	  	else
+		}
+		else
 		{
 			it->second = 0;
 			++it;
@@ -346,7 +346,7 @@ std::string ServerConnection::SendCommand(std::string command, bool print)
 
 	RCONPacket packet;
 	memset(&packet, 0, sizeof(packet));
-	packet.length = 10 + command.length();
+	packet.length = 10 + (int)command.length();
 	packet.id     = 1;
 	packet.type   = 2;
 	memcpy(packet.payload, command.data(), command.length());
@@ -386,7 +386,7 @@ std::string ServerConnection::SendCommand(std::string command, bool print)
 	while (packet.type == 0);
 	response.push_back(0);
 
-	int pos = command.find("help");
+	int pos = (int)command.find("help");
 	if (pos == 0 || pos == 1)
 	{
 		std::vector<char> temp; 
@@ -441,8 +441,8 @@ ServerConnection::State ServerConnection::ServerConnect()
 	try 
 	{
 		server_socket.close();
-    	tcp::resolver tcp_resolver(io_context);
-    	asio::connect(server_socket, tcp_resolver.resolve(server_ip, std::to_string(server_port)));
+		tcp::resolver tcp_resolver(io_context);
+		asio::connect(server_socket, tcp_resolver.resolve(server_ip, std::to_string(server_port)));
 	}
 	catch(const std::exception& e)
 	{
@@ -472,8 +472,8 @@ ServerConnection::State ServerConnection::RCONConnect()
 	try 
 	{
 		rcon_socket.close();
-    	tcp::resolver tcp_resolver(io_context);
-    	asio::connect(rcon_socket, tcp_resolver.resolve(server_ip, std::to_string(rcon_port)));
+		tcp::resolver tcp_resolver(io_context);
+		asio::connect(rcon_socket, tcp_resolver.resolve(server_ip, std::to_string(rcon_port)));
 	}
 	catch(const std::exception& e)
 	{
@@ -502,7 +502,7 @@ ServerConnection::State ServerConnection::RCONLogin()
 
 	RCONPacket packet;
 	memset(&packet, 0, sizeof(packet));
-	packet.length = 10 + rcon_pass.length();
+	packet.length = 10 + (int)rcon_pass.length();
 	packet.id     = 1;
 	packet.type   = 3;
 	memcpy(packet.payload, rcon_pass.data(), rcon_pass.length());
@@ -540,8 +540,8 @@ ServerConnection::State ServerConnection::QueryConnect()
 	try 
 	{
 		query_socket.close();
-    	udp::resolver udp_resolver(io_context);
-    	asio::connect(query_socket, udp_resolver.resolve(udp::v4(), server_ip, std::to_string(query_port)));
+		udp::resolver udp_resolver(io_context);
+		asio::connect(query_socket, udp_resolver.resolve(udp::v4(), server_ip, std::to_string(query_port)));
 		std::this_thread::sleep_for(500ms);
 		std::vector<uint8_t> sessionID{0x00,0x00,0x00,0x00,0x00};
 		query_socket.send(asio::buffer(sessionID));

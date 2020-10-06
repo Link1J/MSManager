@@ -25,7 +25,7 @@ UserModel::UserModel(QObject* parent)
 
 int UserModel::rowCount(const QModelIndex& parent) const
 {
-    return parent.isValid() ? 0 : mydata.size();
+    return parent.isValid() ? 0 : (int)mydata.size();
 }
 
 QVariant UserModel::data(const QModelIndex& index, int role) const
@@ -92,7 +92,7 @@ void UserModel::addUser(std::string user)
 {
     if (std::find(mydata.begin(), mydata.end(), user) != mydata.end())
         return;
-    beginInsertRows(QModelIndex(), mydata.size(), mydata.size());
+    beginInsertRows(QModelIndex(), (int)mydata.size(), (int)mydata.size());
     mydata.push_back(user);
     endInsertRows();
 }

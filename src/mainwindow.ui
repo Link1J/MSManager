@@ -622,5 +622,7 @@
   <slot>SendCommand()</slot>
   <slot>OpenSettings()</slot>
   <slot>OpenAbout()</slot>
+  <slot>OpenAboutQt()</slot>
+  <slot>close()</slot>
  </slots>
 </ui>

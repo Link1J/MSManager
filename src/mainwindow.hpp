@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <QObject>
 #include <QMainWindow>
 #include <QScopedPointer>
 #include <QItemSelection>

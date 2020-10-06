@@ -35,7 +35,7 @@ public:
 	{
 		MovePast(key);
 		std::string value((char*)&vector[index]);
-		index += value.size();
+		index += (int)value.size();
 		return value;
 	}
 
@@ -55,7 +55,7 @@ public:
 				break;
 		}
 
-		index += key.size() + 1;
+		index += (int)key.size() + 1;
 	}
 
 	std::string GetValueDelim(uint8_t delim)

@@ -37,8 +37,8 @@ std::vector<std::string> split(const std::string& s, char delimiter)
 
 UserInfoPanel::UserInfoPanel(QWidget* parent)
 	: QMainWindow(parent)
-	, timer(new QTimer(this))
 	, ui(new Ui::UserInfoPanel)
+	, timer(new QTimer(this))
 {
 	ui->setupUi(this);
 

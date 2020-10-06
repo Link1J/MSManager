@@ -120,7 +120,8 @@
 		"scoped_allocator": "cpp",
 		"span": "cpp",
 		"stack": "cpp",
-		"qplatformsurfaceevent": "cpp"
+		"qplatformsurfaceevent": "cpp",
+		"qobject": "cpp"
 	},
 	"C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
 }
