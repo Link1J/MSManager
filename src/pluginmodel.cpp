@@ -25,7 +25,7 @@ PluginModel::PluginModel(QObject* parent)
 
 int PluginModel::rowCount(const QModelIndex& parent) const
 {
-    return parent.isValid() ? 0 : mydata.size();
+    return parent.isValid() ? 0 : (int)mydata.size();
 }
 
 QVariant PluginModel::data(const QModelIndex& index, int role) const
@@ -92,7 +92,7 @@ void PluginModel::addPlugin(std::string plugin)
 {
     if (std::find(mydata.begin(), mydata.end(), plugin) != mydata.end())
         return;
-    beginInsertRows(QModelIndex(), mydata.size(), mydata.size());
+    beginInsertRows(QModelIndex(), (int)mydata.size(), (int)mydata.size());
     mydata.push_back(plugin);
     endInsertRows();
 }

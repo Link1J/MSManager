@@ -444,7 +444,7 @@ ServerConnection::State ServerConnection::ServerConnect()
 		tcp::resolver tcp_resolver(io_context);
 		asio::connect(server_socket, tcp_resolver.resolve(server_ip, std::to_string(server_port)));
 	}
-	catch(const std::exception& e)
+	catch(const std::exception&)
 	{
 		pre_ip = server_ip;
 		return State::Failed;
@@ -475,7 +475,7 @@ ServerConnection::State ServerConnection::RCONConnect()
 		tcp::resolver tcp_resolver(io_context);
 		asio::connect(rcon_socket, tcp_resolver.resolve(server_ip, std::to_string(rcon_port)));
 	}
-	catch(const std::exception& e)
+	catch(const std::exception&)
 	{
 		rcon_connected = false;
 		pre_port = rcon_port;
@@ -546,7 +546,7 @@ ServerConnection::State ServerConnection::QueryConnect()
 		std::vector<uint8_t> sessionID{0x00,0x00,0x00,0x00,0x00};
 		query_socket.send(asio::buffer(sessionID));
 	}
-	catch(const std::exception& e)
+	catch(const std::exception&)
 	{
 		query_connected = false;
 		pre_port = query_port;
@@ -599,7 +599,7 @@ std::vector<uint8_t> ServerConnection::QueryPing()
 		query_socket.send   (asio::buffer(getstat     ));
 		query_socket.receive(asio::buffer(query_status));
 	}
-	catch(const std::exception& e)
+	catch(const std::exception&)
 	{
 		QMessageBox::warning(
 			window,

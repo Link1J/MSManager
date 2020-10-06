@@ -151,7 +151,14 @@ void MainWindow::OpenSettings()
 
 void MainWindow::OpenAbout() 
 {
-	QMessageBox::about(this, "About", "MSManager\nCreated by: Link1J\n");
+	QMessageBox::about(this, "About",
+R"(
+MSManager
+
+Copyright (C) 2020 Jared Irwin
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it under certain conditions.
+)");
 }
 
 void MainWindow::OpenAboutQt() 
