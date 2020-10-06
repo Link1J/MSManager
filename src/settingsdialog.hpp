@@ -1,6 +1,6 @@
 /*
     MSManager - A Minecraft server manager
-    Copyright (C) 2020 Link1J
+    Copyright (C) 2020 Jared Irwin
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
