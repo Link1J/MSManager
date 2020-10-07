@@ -8,13 +8,11 @@
 			"name": "(Windows) Launch",
 			"type": "cppvsdbg",
 			"request": "launch",
-			"program": "${workspaceFolder}/build/msmanager.exe",
+			"program": "${workspaceFolder}/build/debug/msmanager.exe",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${workspaceFolder}/build",
-			"environment": [],
+			"cwd": "${workspaceFolder}/build/debug",
 			"externalConsole": false,
-			"visualizerFile": "c:\\Users\\jrair\\AppData\\Roaming\\Code - Insiders\\User\\workspaceStorage\\40c4bdb6b5da7b45b91c798a000d589a\\tonka3000.qtvsctools\\qt.natvis.xml"
 		},
 		{
 			"name": "(gdb) Launch",
@@ -34,7 +32,6 @@
 					"ignoreFailures": true
 				}
 			],
-			"visualizerFile": "c:\\Users\\jrair\\AppData\\Roaming\\Code - Insiders\\User\\workspaceStorage\\40c4bdb6b5da7b45b91c798a000d589a\\tonka3000.qtvsctools\\qt.natvis.xml"
 		}
 	]
 }

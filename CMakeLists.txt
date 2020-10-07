@@ -79,20 +79,16 @@ target_compile_definitions(msmanager PUBLIC
     $<$<PLATFORM_ID:WindowsStore>:"ASIO_WINDOWS_APP=1">
 )
 
-if (WIN32 AND NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
-    set(TEST ON)
-endif()
-
 target_include_directories(msmanager PUBLIC
     externals/asio/asio/include
     src
 )
 
 target_link_libraries(msmanager 
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
-    Qt6::OpenGLWidgets
+    Qt::Core
+    Qt::Gui
+    Qt::Widgets
+    Qt::OpenGLWidgets
     nlohmann_json::nlohmann_json
     Threads::Threads
     fmt::fmt
@@ -103,8 +99,15 @@ install(TARGETS msmanager RUNTIME DESTINATION .)
 if (WIN32 AND NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
     add_custom_command(TARGET msmanager POST_BUILD
         COMMENT "Deploying Qt..."
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/windeployqt"
         COMMAND Qt::windeployqt --dir "${CMAKE_BINARY_DIR}/windeployqt" "$<TARGET_FILE:msmanager>" --verbose 0 --no-compiler-runtime
-        COMMAND Qt::windeployqt --dir "${CMAKE_BINARY_DIR}" "$<TARGET_FILE:msmanager>" --verbose 0 --no-compiler-runtime
+    )
+    add_custom_command(TARGET msmanager POST_BUILD
+        COMMENT "Creating Debug Folder..."
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/debug"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/debug/"
+        COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:msmanager>" "${CMAKE_BINARY_DIR}/debug/"
+        COMMAND Qt::windeployqt --dir "${CMAKE_BINARY_DIR}/debug" "$<TARGET_FILE:msmanager>" --verbose 0 --no-compiler-runtime
     )
     install(DIRECTORY ${CMAKE_BINARY_DIR}/windeployqt/ DESTINATION .)
 endif()
