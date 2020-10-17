@@ -1,190 +1,190 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <comment>
-  MSManager - A Minecraft server manager
-  Copyright (C) 2020 Jared Irwin
+	<comment>
+		MSManager - A Minecraft server manager
+		Copyright (C) 2020 Jared Irwin
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation, either version 3 of the License, or
+		(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+		GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see https://www.gnu.org/licenses/.
- </comment>
- <class>SettingsDialog</class>
- <widget class="QDialog" name="SettingsDialog">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>258</width>
-    <height>171</height>
-   </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>258</width>
-    <height>171</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>258</width>
-    <height>171</height>
-   </size>
-  </property>
-  <property name="windowTitle">
-   <string>Settings</string>
-  </property>
-  <property name="windowIcon">
-   <iconset theme="settings">
-    <normaloff>.</normaloff>.</iconset>
-  </property>
-  <property name="sizeGripEnabled">
-   <bool>false</bool>
-  </property>
-  <layout class="QFormLayout" name="formLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Server IP</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="server_ip"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Server Port</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Query Port</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>RCON Port</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>RCON Password</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QSpinBox" name="server_port">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximum">
-      <number>65535</number>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QSpinBox" name="query_port">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximum">
-      <number>65535</number>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QSpinBox" name="rcon_port">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximum">
-      <number>65535</number>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QLineEdit" name="rcon_password">
-     <property name="frame">
-      <bool>true</bool>
-     </property>
-     <property name="echoMode">
-      <enum>QLineEdit::PasswordEchoOnEdit</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-  </layout>
- </widget>
- <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>SettingsDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>144</x>
-     <y>147</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>47</x>
-     <y>152</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>SettingsDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>194</x>
-     <y>148</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>67</x>
-     <y>156</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+		You should have received a copy of the GNU General Public License
+		along with this program.  If not, see https://www.gnu.org/licenses/.
+	</comment>
+	<class>SettingsDialog</class>
+	<widget class="QDialog" name="SettingsDialog">
+		<property name="geometry">
+			<rect>
+				<x>0</x>
+				<y>0</y>
+				<width>258</width>
+				<height>171</height>
+			</rect>
+		</property>
+		<property name="sizePolicy">
+			<sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+				<horstretch>0</horstretch>
+				<verstretch>0</verstretch>
+			</sizepolicy>
+		</property>
+		<property name="minimumSize">
+			<size>
+				<width>258</width>
+				<height>171</height>
+			</size>
+		</property>
+		<property name="maximumSize">
+			<size>
+				<width>258</width>
+				<height>171</height>
+			</size>
+		</property>
+		<property name="windowTitle">
+			<string>Settings</string>
+		</property>
+		<property name="windowIcon">
+			<iconset theme="settings">
+				<normaloff>.</normaloff>.</iconset>
+		</property>
+		<property name="sizeGripEnabled">
+			<bool>false</bool>
+		</property>
+		<layout class="QFormLayout" name="formLayout">
+			<item row="0" column="0">
+				<widget class="QLabel" name="label">
+					<property name="text">
+						<string>Server IP</string>
+					</property>
+				</widget>
+			</item>
+			<item row="0" column="1">
+				<widget class="QLineEdit" name="server_ip"/>
+			</item>
+			<item row="1" column="0">
+				<widget class="QLabel" name="label_2">
+					<property name="text">
+						<string>Server Port</string>
+					</property>
+				</widget>
+			</item>
+			<item row="2" column="0">
+				<widget class="QLabel" name="label_3">
+					<property name="text">
+						<string>Query Port</string>
+					</property>
+				</widget>
+			</item>
+			<item row="3" column="0">
+				<widget class="QLabel" name="label_4">
+					<property name="text">
+						<string>RCON Port</string>
+					</property>
+				</widget>
+			</item>
+			<item row="4" column="0">
+				<widget class="QLabel" name="label_5">
+					<property name="text">
+						<string>RCON Password</string>
+					</property>
+				</widget>
+			</item>
+			<item row="1" column="1">
+				<widget class="QSpinBox" name="server_port">
+					<property name="sizePolicy">
+						<sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+							<horstretch>0</horstretch>
+							<verstretch>0</verstretch>
+						</sizepolicy>
+					</property>
+					<property name="maximum">
+						<number>65535</number>
+					</property>
+				</widget>
+			</item>
+			<item row="2" column="1">
+				<widget class="QSpinBox" name="query_port">
+					<property name="sizePolicy">
+						<sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+							<horstretch>0</horstretch>
+							<verstretch>0</verstretch>
+						</sizepolicy>
+					</property>
+					<property name="maximum">
+						<number>65535</number>
+					</property>
+				</widget>
+			</item>
+			<item row="3" column="1">
+				<widget class="QSpinBox" name="rcon_port">
+					<property name="sizePolicy">
+						<sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+							<horstretch>0</horstretch>
+							<verstretch>0</verstretch>
+						</sizepolicy>
+					</property>
+					<property name="maximum">
+						<number>65535</number>
+					</property>
+				</widget>
+			</item>
+			<item row="4" column="1">
+				<widget class="QLineEdit" name="rcon_password">
+					<property name="frame">
+						<bool>true</bool>
+					</property>
+					<property name="echoMode">
+						<enum>QLineEdit::PasswordEchoOnEdit</enum>
+					</property>
+				</widget>
+			</item>
+			<item row="5" column="1">
+				<widget class="QDialogButtonBox" name="buttonBox">
+					<property name="standardButtons">
+						<set>QDialogButtonBox::Ok</set>
+					</property>
+				</widget>
+			</item>
+		</layout>
+	</widget>
+	<resources/>
+	<connections>
+		<connection>
+			<sender>buttonBox</sender>
+			<signal>accepted()</signal>
+			<receiver>SettingsDialog</receiver>
+			<slot>accept()</slot>
+			<hints>
+				<hint type="sourcelabel">
+					<x>144</x>
+					<y>147</y>
+				</hint>
+				<hint type="destinationlabel">
+					<x>47</x>
+					<y>152</y>
+				</hint>
+			</hints>
+		</connection>
+		<connection>
+			<sender>buttonBox</sender>
+			<signal>rejected()</signal>
+			<receiver>SettingsDialog</receiver>
+			<slot>reject()</slot>
+			<hints>
+				<hint type="sourcelabel">
+					<x>194</x>
+					<y>148</y>
+				</hint>
+				<hint type="destinationlabel">
+					<x>67</x>
+					<y>156</y>
+				</hint>
+			</hints>
+		</connection>
+	</connections>
 </ui>

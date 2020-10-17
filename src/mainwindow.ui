@@ -1,645 +1,645 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <comment>
-  MSManager - A Minecraft server manager
-  Copyright (C) 2020 Jared Irwin
+	<comment>
+		MSManager - A Minecraft server manager
+		Copyright (C) 2020 Jared Irwin
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation, either version 3 of the License, or
+		(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+		GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see https://www.gnu.org/licenses/.
- </comment>
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>352</width>
-    <height>405</height>
-   </rect>
-  </property>
-  <property name="contextMenuPolicy">
-   <enum>Qt::ActionsContextMenu</enum>
-  </property>
-  <property name="windowTitle">
-   <string>Minecraft Server Manager</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="../assets/resources.qrc">
-    <normaloff>:/Icons/AppIcon</normaloff>:/Icons/AppIcon</iconset>
-  </property>
-  <property name="toolButtonStyle">
-   <enum>Qt::ToolButtonIconOnly</enum>
-  </property>
-  <property name="animated">
-   <bool>true</bool>
-  </property>
-  <property name="documentMode">
-   <bool>false</bool>
-  </property>
-  <property name="unifiedTitleAndToolBarOnMac">
-   <bool>false</bool>
-  </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
-    <property name="spacing">
-     <number>0</number>
-    </property>
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
-     <number>0</number>
-    </property>
-    <item>
-     <widget class="QTabWidget" name="tabs">
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="whatsThis">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Test&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="tabShape">
-       <enum>QTabWidget::Rounded</enum>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <property name="documentMode">
-       <bool>true</bool>
-      </property>
-      <property name="tabsClosable">
-       <bool>false</bool>
-      </property>
-      <property name="movable">
-       <bool>false</bool>
-      </property>
-      <property name="tabBarAutoHide">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="summary_tab">
-       <attribute name="title">
-        <string>Summary</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
-            <property name="spacing">
-             <number>2</number>
-            </property>
-            <property name="leftMargin">
-             <number>2</number>
-            </property>
-            <property name="topMargin">
-             <number>2</number>
-            </property>
-            <property name="rightMargin">
-             <number>2</number>
-            </property>
-            <property name="bottomMargin">
-             <number>2</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="server_icon">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>64</width>
-                <height>64</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_3">
-              <property name="spacing">
-               <number>2</number>
-              </property>
-              <property name="sizeConstraint">
-               <enum>QLayout::SetDefaultConstraint</enum>
-              </property>
-              <property name="leftMargin">
-               <number>2</number>
-              </property>
-              <property name="topMargin">
-               <number>2</number>
-              </property>
-              <property name="rightMargin">
-               <number>2</number>
-              </property>
-              <property name="bottomMargin">
-               <number>2</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="server_motd">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>250</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="server_ip">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>250</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QScrollArea" name="scrollArea">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
-            </property>
-            <property name="widgetResizable">
-             <bool>true</bool>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-            </property>
-            <widget class="QWidget" name="scrollAreaWidgetContents">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>330</width>
-               <height>273</height>
-              </rect>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_6">
-              <property name="sizeConstraint">
-               <enum>QLayout::SetDefaultConstraint</enum>
-              </property>
-              <item>
-               <widget class="QGroupBox" name="version_group">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="title">
-                 <string>Version</string>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_7">
-                 <item>
-                  <widget class="QLabel" name="server_type">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>false</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item>
-               <widget class="QGroupBox" name="mod_name_group">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="title">
-                 <string>Mod Name</string>
-                </property>
-                <property name="checked">
-                 <bool>false</bool>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_8">
-                 <item>
-                  <widget class="QLabel" name="mod_name">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="users_tab">
-       <attribute name="title">
-        <string>Users</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <property name="sizeConstraint">
-           <enum>QLayout::SetMinimumSize</enum>
-          </property>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="label_2">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Users:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="users_online">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>0</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_3">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>/</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="users_max">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>0</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QListView" name="users_list">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::ClickFocus</enum>
-            </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QAbstractScrollArea::AdjustToContents</enum>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>true</bool>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::SingleSelection</enum>
-            </property>
-            <property name="viewMode">
-             <enum>QListView::ListMode</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="rcon_tab">
-       <attribute name="title">
-        <string>RCON</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QListWidget" name="command_list">
-            <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
-            </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QAbstractScrollArea::AdjustToContents</enum>
-            </property>
-            <property name="showDropIndicator" stdset="0">
-             <bool>false</bool>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>true</bool>
-            </property>
-            <property name="verticalScrollMode">
-             <enum>QAbstractItemView::ScrollPerPixel</enum>
-            </property>
-            <property name="horizontalScrollMode">
-             <enum>QAbstractItemView::ScrollPerPixel</enum>
-            </property>
-            <property name="movement">
-             <enum>QListView::Static</enum>
-            </property>
-            <property name="resizeMode">
-             <enum>QListView::Adjust</enum>
-            </property>
-            <property name="layoutMode">
-             <enum>QListView::Batched</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="command"/>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="plugins_tab">
-       <attribute name="title">
-        <string>Plugins</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_10">
-        <item>
-         <widget class="QListView" name="plugins_list">
-          <property name="focusPolicy">
-           <enum>Qt::NoFocus</enum>
-          </property>
-          <property name="alternatingRowColors">
-           <bool>true</bool>
-          </property>
-          <property name="selectionMode">
-           <enum>QAbstractItemView::NoSelection</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>352</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
-    </property>
-    <addaction name="action_settings"/>
-    <addaction name="separator"/>
-    <addaction name="action_exit"/>
-   </widget>
-   <widget class="QMenu" name="menuHelp">
-    <property name="title">
-     <string>About</string>
-    </property>
-    <addaction name="action_about"/>
-    <addaction name="action_about_qt"/>
-   </widget>
-   <addaction name="menuFile"/>
-   <addaction name="menuHelp"/>
-  </widget>
-  <action name="action_settings">
-   <property name="text">
-    <string>Settings</string>
-   </property>
-  </action>
-  <action name="action_exit">
-   <property name="text">
-    <string>Exit</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Q</string>
-   </property>
-  </action>
-  <action name="action_about">
-   <property name="text">
-    <string>About</string>
-   </property>
-  </action>
-  <action name="action_about_qt">
-   <property name="text">
-    <string>About Qt</string>
-   </property>
-  </action>
- </widget>
- <tabstops>
-  <tabstop>command_list</tabstop>
-  <tabstop>users_list</tabstop>
-  <tabstop>command</tabstop>
- </tabstops>
- <resources>
-  <include location="../assets/resources.qrc"/>
- </resources>
- <connections>
-  <connection>
-   <sender>command</sender>
-   <signal>returnPressed()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>SendCommand()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>341</x>
-     <y>394</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>329</x>
-     <y>0</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_settings</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>OpenSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>299</x>
-     <y>199</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_about</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>OpenAbout()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>299</x>
-     <y>199</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_about_qt</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>OpenAboutQt()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>318</x>
-     <y>202</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_exit</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>175</x>
-     <y>202</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
- <slots>
-  <slot>SendCommand()</slot>
-  <slot>OpenSettings()</slot>
-  <slot>OpenAbout()</slot>
-  <slot>OpenAboutQt()</slot>
-  <slot>close()</slot>
- </slots>
+		You should have received a copy of the GNU General Public License
+		along with this program.  If not, see https://www.gnu.org/licenses/.
+	</comment>
+	<class>MainWindow</class>
+	<widget class="QMainWindow" name="MainWindow">
+		<property name="geometry">
+			<rect>
+				<x>0</x>
+				<y>0</y>
+				<width>352</width>
+				<height>405</height>
+			</rect>
+		</property>
+		<property name="contextMenuPolicy">
+			<enum>Qt::ActionsContextMenu</enum>
+		</property>
+		<property name="windowTitle">
+			<string>Minecraft Server Manager</string>
+		</property>
+		<property name="windowIcon">
+			<iconset resource="../assets/resources.qrc">
+				<normaloff>:/Icons/AppIcon</normaloff>:/Icons/AppIcon</iconset>
+		</property>
+		<property name="toolButtonStyle">
+			<enum>Qt::ToolButtonIconOnly</enum>
+		</property>
+		<property name="animated">
+			<bool>true</bool>
+		</property>
+		<property name="documentMode">
+			<bool>false</bool>
+		</property>
+		<property name="unifiedTitleAndToolBarOnMac">
+			<bool>true</bool>
+		</property>
+		<widget class="QWidget" name="centralwidget">
+			<layout class="QHBoxLayout" name="horizontalLayout_2">
+				<property name="spacing">
+					<number>0</number>
+				</property>
+				<property name="leftMargin">
+					<number>0</number>
+				</property>
+				<property name="topMargin">
+					<number>0</number>
+				</property>
+				<property name="rightMargin">
+					<number>0</number>
+				</property>
+				<property name="bottomMargin">
+					<number>0</number>
+				</property>
+				<item>
+					<widget class="QTabWidget" name="tabs">
+						<property name="toolTip">
+							<string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+						</property>
+						<property name="whatsThis">
+							<string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Test&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+						</property>
+						<property name="tabShape">
+							<enum>QTabWidget::Rounded</enum>
+						</property>
+						<property name="currentIndex">
+							<number>0</number>
+						</property>
+						<property name="documentMode">
+							<bool>true</bool>
+						</property>
+						<property name="tabsClosable">
+							<bool>false</bool>
+						</property>
+						<property name="movable">
+							<bool>false</bool>
+						</property>
+						<property name="tabBarAutoHide">
+							<bool>true</bool>
+						</property>
+						<widget class="QWidget" name="summary_tab">
+							<attribute name="title">
+								<string>Summary</string>
+							</attribute>
+							<layout class="QHBoxLayout" name="horizontalLayout_3">
+								<item>
+									<layout class="QVBoxLayout" name="verticalLayout_5">
+										<property name="spacing">
+											<number>0</number>
+										</property>
+										<item>
+											<layout class="QHBoxLayout" name="horizontalLayout_8">
+												<property name="spacing">
+													<number>2</number>
+												</property>
+												<property name="leftMargin">
+													<number>2</number>
+												</property>
+												<property name="topMargin">
+													<number>2</number>
+												</property>
+												<property name="rightMargin">
+													<number>2</number>
+												</property>
+												<property name="bottomMargin">
+													<number>2</number>
+												</property>
+												<item>
+													<widget class="QLabel" name="server_icon">
+														<property name="sizePolicy">
+															<sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+																<horstretch>0</horstretch>
+																<verstretch>0</verstretch>
+															</sizepolicy>
+														</property>
+														<property name="minimumSize">
+															<size>
+																<width>64</width>
+																<height>64</height>
+															</size>
+														</property>
+														<property name="text">
+															<string/>
+														</property>
+													</widget>
+												</item>
+												<item>
+													<layout class="QVBoxLayout" name="verticalLayout_3">
+														<property name="spacing">
+															<number>2</number>
+														</property>
+														<property name="sizeConstraint">
+															<enum>QLayout::SetDefaultConstraint</enum>
+														</property>
+														<property name="leftMargin">
+															<number>2</number>
+														</property>
+														<property name="topMargin">
+															<number>2</number>
+														</property>
+														<property name="rightMargin">
+															<number>2</number>
+														</property>
+														<property name="bottomMargin">
+															<number>2</number>
+														</property>
+														<item>
+															<widget class="QLabel" name="server_motd">
+																<property name="sizePolicy">
+																	<sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+																		<horstretch>0</horstretch>
+																		<verstretch>0</verstretch>
+																	</sizepolicy>
+																</property>
+																<property name="minimumSize">
+																	<size>
+																		<width>250</width>
+																		<height>0</height>
+																	</size>
+																</property>
+																<property name="text">
+																	<string/>
+																</property>
+																<property name="alignment">
+																	<set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+																</property>
+																<property name="wordWrap">
+																	<bool>true</bool>
+																</property>
+															</widget>
+														</item>
+														<item>
+															<widget class="QLabel" name="server_ip">
+																<property name="sizePolicy">
+																	<sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+																		<horstretch>0</horstretch>
+																		<verstretch>0</verstretch>
+																	</sizepolicy>
+																</property>
+																<property name="minimumSize">
+																	<size>
+																		<width>250</width>
+																		<height>0</height>
+																	</size>
+																</property>
+																<property name="text">
+																	<string/>
+																</property>
+															</widget>
+														</item>
+													</layout>
+												</item>
+											</layout>
+										</item>
+										<item>
+											<widget class="QScrollArea" name="scrollArea">
+												<property name="sizePolicy">
+													<sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+														<horstretch>0</horstretch>
+														<verstretch>0</verstretch>
+													</sizepolicy>
+												</property>
+												<property name="focusPolicy">
+													<enum>Qt::NoFocus</enum>
+												</property>
+												<property name="widgetResizable">
+													<bool>true</bool>
+												</property>
+												<property name="alignment">
+													<set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+												</property>
+												<widget class="QWidget" name="scrollAreaWidgetContents">
+													<property name="geometry">
+														<rect>
+															<x>0</x>
+															<y>0</y>
+															<width>330</width>
+															<height>273</height>
+														</rect>
+													</property>
+													<layout class="QVBoxLayout" name="verticalLayout_6">
+														<property name="sizeConstraint">
+															<enum>QLayout::SetDefaultConstraint</enum>
+														</property>
+														<item>
+															<widget class="QGroupBox" name="version_group">
+																<property name="sizePolicy">
+																	<sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+																		<horstretch>0</horstretch>
+																		<verstretch>0</verstretch>
+																	</sizepolicy>
+																</property>
+																<property name="title">
+																	<string>Version</string>
+																</property>
+																<layout class="QVBoxLayout" name="verticalLayout_7">
+																	<item>
+																		<widget class="QLabel" name="server_type">
+																			<property name="sizePolicy">
+																				<sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+																					<horstretch>0</horstretch>
+																					<verstretch>0</verstretch>
+																				</sizepolicy>
+																			</property>
+																			<property name="text">
+																				<string/>
+																			</property>
+																			<property name="wordWrap">
+																				<bool>false</bool>
+																			</property>
+																		</widget>
+																	</item>
+																</layout>
+															</widget>
+														</item>
+														<item>
+															<widget class="QGroupBox" name="mod_name_group">
+																<property name="sizePolicy">
+																	<sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+																		<horstretch>0</horstretch>
+																		<verstretch>0</verstretch>
+																	</sizepolicy>
+																</property>
+																<property name="title">
+																	<string>Mod Name</string>
+																</property>
+																<property name="checked">
+																	<bool>false</bool>
+																</property>
+																<layout class="QVBoxLayout" name="verticalLayout_8">
+																	<item>
+																		<widget class="QLabel" name="mod_name">
+																			<property name="sizePolicy">
+																				<sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+																					<horstretch>0</horstretch>
+																					<verstretch>0</verstretch>
+																				</sizepolicy>
+																			</property>
+																			<property name="text">
+																				<string/>
+																			</property>
+																		</widget>
+																	</item>
+																</layout>
+															</widget>
+														</item>
+													</layout>
+												</widget>
+											</widget>
+										</item>
+									</layout>
+								</item>
+							</layout>
+						</widget>
+						<widget class="QWidget" name="users_tab">
+							<attribute name="title">
+								<string>Users</string>
+							</attribute>
+							<layout class="QHBoxLayout" name="horizontalLayout_5">
+								<item>
+									<layout class="QVBoxLayout" name="verticalLayout">
+										<property name="spacing">
+											<number>0</number>
+										</property>
+										<property name="sizeConstraint">
+											<enum>QLayout::SetMinimumSize</enum>
+										</property>
+										<item>
+											<layout class="QHBoxLayout" name="horizontalLayout">
+												<item>
+													<widget class="QLabel" name="label_2">
+														<property name="sizePolicy">
+															<sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+																<horstretch>0</horstretch>
+																<verstretch>0</verstretch>
+															</sizepolicy>
+														</property>
+														<property name="text">
+															<string>Users:</string>
+														</property>
+													</widget>
+												</item>
+												<item>
+													<widget class="QLabel" name="users_online">
+														<property name="sizePolicy">
+															<sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+																<horstretch>0</horstretch>
+																<verstretch>0</verstretch>
+															</sizepolicy>
+														</property>
+														<property name="text">
+															<string>0</string>
+														</property>
+													</widget>
+												</item>
+												<item>
+													<widget class="QLabel" name="label_3">
+														<property name="sizePolicy">
+															<sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+																<horstretch>0</horstretch>
+																<verstretch>0</verstretch>
+															</sizepolicy>
+														</property>
+														<property name="minimumSize">
+															<size>
+																<width>0</width>
+																<height>0</height>
+															</size>
+														</property>
+														<property name="maximumSize">
+															<size>
+																<width>16777215</width>
+																<height>16777215</height>
+															</size>
+														</property>
+														<property name="text">
+															<string>/</string>
+														</property>
+													</widget>
+												</item>
+												<item>
+													<widget class="QLabel" name="users_max">
+														<property name="sizePolicy">
+															<sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+																<horstretch>0</horstretch>
+																<verstretch>0</verstretch>
+															</sizepolicy>
+														</property>
+														<property name="text">
+															<string>0</string>
+														</property>
+													</widget>
+												</item>
+											</layout>
+										</item>
+										<item>
+											<widget class="QListView" name="users_list">
+												<property name="sizePolicy">
+													<sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+														<horstretch>0</horstretch>
+														<verstretch>0</verstretch>
+													</sizepolicy>
+												</property>
+												<property name="minimumSize">
+													<size>
+														<width>150</width>
+														<height>0</height>
+													</size>
+												</property>
+												<property name="focusPolicy">
+													<enum>Qt::ClickFocus</enum>
+												</property>
+												<property name="sizeAdjustPolicy">
+													<enum>QAbstractScrollArea::AdjustToContents</enum>
+												</property>
+												<property name="alternatingRowColors">
+													<bool>true</bool>
+												</property>
+												<property name="selectionMode">
+													<enum>QAbstractItemView::SingleSelection</enum>
+												</property>
+												<property name="viewMode">
+													<enum>QListView::ListMode</enum>
+												</property>
+											</widget>
+										</item>
+									</layout>
+								</item>
+							</layout>
+						</widget>
+						<widget class="QWidget" name="rcon_tab">
+							<attribute name="title">
+								<string>RCON</string>
+							</attribute>
+							<layout class="QHBoxLayout" name="horizontalLayout_4">
+								<item>
+									<layout class="QVBoxLayout" name="verticalLayout_2">
+										<property name="spacing">
+											<number>0</number>
+										</property>
+										<item>
+											<widget class="QListWidget" name="command_list">
+												<property name="focusPolicy">
+													<enum>Qt::NoFocus</enum>
+												</property>
+												<property name="sizeAdjustPolicy">
+													<enum>QAbstractScrollArea::AdjustToContents</enum>
+												</property>
+												<property name="showDropIndicator" stdset="0">
+													<bool>false</bool>
+												</property>
+												<property name="alternatingRowColors">
+													<bool>true</bool>
+												</property>
+												<property name="verticalScrollMode">
+													<enum>QAbstractItemView::ScrollPerPixel</enum>
+												</property>
+												<property name="horizontalScrollMode">
+													<enum>QAbstractItemView::ScrollPerPixel</enum>
+												</property>
+												<property name="movement">
+													<enum>QListView::Static</enum>
+												</property>
+												<property name="resizeMode">
+													<enum>QListView::Adjust</enum>
+												</property>
+												<property name="layoutMode">
+													<enum>QListView::Batched</enum>
+												</property>
+											</widget>
+										</item>
+										<item>
+											<widget class="QLineEdit" name="command"/>
+										</item>
+									</layout>
+								</item>
+							</layout>
+						</widget>
+						<widget class="QWidget" name="plugins_tab">
+							<attribute name="title">
+								<string>Plugins</string>
+							</attribute>
+							<layout class="QVBoxLayout" name="verticalLayout_10">
+								<item>
+									<widget class="QListView" name="plugins_list">
+										<property name="focusPolicy">
+											<enum>Qt::NoFocus</enum>
+										</property>
+										<property name="alternatingRowColors">
+											<bool>true</bool>
+										</property>
+										<property name="selectionMode">
+											<enum>QAbstractItemView::NoSelection</enum>
+										</property>
+									</widget>
+								</item>
+							</layout>
+						</widget>
+					</widget>
+				</item>
+			</layout>
+		</widget>
+		<widget class="QMenuBar" name="menuBar">
+			<property name="geometry">
+				<rect>
+					<x>0</x>
+					<y>0</y>
+					<width>352</width>
+					<height>21</height>
+				</rect>
+			</property>
+			<widget class="QMenu" name="menuFile">
+				<property name="title">
+					<string>File</string>
+				</property>
+				<addaction name="action_settings"/>
+				<addaction name="separator"/>
+				<addaction name="action_exit"/>
+			</widget>
+			<widget class="QMenu" name="menuHelp">
+				<property name="title">
+					<string>About</string>
+				</property>
+				<addaction name="action_about"/>
+				<addaction name="action_about_qt"/>
+			</widget>
+			<addaction name="menuFile"/>
+			<addaction name="menuHelp"/>
+		</widget>
+		<action name="action_settings">
+			<property name="text">
+				<string>Settings</string>
+			</property>
+		</action>
+		<action name="action_exit">
+			<property name="text">
+				<string>Exit</string>
+			</property>
+			<property name="shortcut">
+				<string>Ctrl+Q</string>
+			</property>
+		</action>
+		<action name="action_about">
+			<property name="text">
+				<string>About</string>
+			</property>
+		</action>
+		<action name="action_about_qt">
+			<property name="text">
+				<string>About Qt</string>
+			</property>
+		</action>
+	</widget>
+	<tabstops>
+		<tabstop>command_list</tabstop>
+		<tabstop>users_list</tabstop>
+		<tabstop>command</tabstop>
+	</tabstops>
+	<resources>
+		<include location="../assets/resources.qrc"/>
+	</resources>
+	<connections>
+		<connection>
+			<sender>command</sender>
+			<signal>returnPressed()</signal>
+			<receiver>MainWindow</receiver>
+			<slot>SendCommand()</slot>
+			<hints>
+				<hint type="sourcelabel">
+					<x>341</x>
+					<y>394</y>
+				</hint>
+				<hint type="destinationlabel">
+					<x>329</x>
+					<y>0</y>
+				</hint>
+			</hints>
+		</connection>
+		<connection>
+			<sender>action_settings</sender>
+			<signal>triggered()</signal>
+			<receiver>MainWindow</receiver>
+			<slot>OpenSettings()</slot>
+			<hints>
+				<hint type="sourcelabel">
+					<x>-1</x>
+					<y>-1</y>
+				</hint>
+				<hint type="destinationlabel">
+					<x>299</x>
+					<y>199</y>
+				</hint>
+			</hints>
+		</connection>
+		<connection>
+			<sender>action_about</sender>
+			<signal>triggered()</signal>
+			<receiver>MainWindow</receiver>
+			<slot>OpenAbout()</slot>
+			<hints>
+				<hint type="sourcelabel">
+					<x>-1</x>
+					<y>-1</y>
+				</hint>
+				<hint type="destinationlabel">
+					<x>299</x>
+					<y>199</y>
+				</hint>
+			</hints>
+		</connection>
+		<connection>
+			<sender>action_about_qt</sender>
+			<signal>triggered()</signal>
+			<receiver>MainWindow</receiver>
+			<slot>OpenAboutQt()</slot>
+			<hints>
+				<hint type="sourcelabel">
+					<x>-1</x>
+					<y>-1</y>
+				</hint>
+				<hint type="destinationlabel">
+					<x>318</x>
+					<y>202</y>
+				</hint>
+			</hints>
+		</connection>
+		<connection>
+			<sender>action_exit</sender>
+			<signal>triggered()</signal>
+			<receiver>MainWindow</receiver>
+			<slot>close()</slot>
+			<hints>
+				<hint type="sourcelabel">
+					<x>-1</x>
+					<y>-1</y>
+				</hint>
+				<hint type="destinationlabel">
+					<x>175</x>
+					<y>202</y>
+				</hint>
+			</hints>
+		</connection>
+	</connections>
+	<slots>
+		<slot>SendCommand()</slot>
+		<slot>OpenSettings()</slot>
+		<slot>OpenAbout()</slot>
+		<slot>OpenAboutQt()</slot>
+		<slot>close()</slot>
+	</slots>
 </ui>

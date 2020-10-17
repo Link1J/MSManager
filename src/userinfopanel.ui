@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <comment>
-  MSManager - A Minecraft server manager
-  Copyright (C) 2020 Jared Irwin
+		MSManager - A Minecraft server manager
+		Copyright (C) 2020 Jared Irwin
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation, either version 3 of the License, or
+		(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+		GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see https://www.gnu.org/licenses/.
- </comment>
+		You should have received a copy of the GNU General Public License
+		along with this program.  If not, see https://www.gnu.org/licenses/.
+	</comment>
  <class>UserInfoPanel</class>
  <widget class="QMainWindow" name="UserInfoPanel">
   <property name="geometry">
@@ -240,7 +240,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QOpenGLWidget" name="openGLWidget">
+          <widget class="QQuickWidget" name="model">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -250,8 +250,16 @@
            <property name="minimumSize">
             <size>
              <width>200</width>
-             <height>0</height>
+             <height>200</height>
             </size>
+           </property>
+           <property name="resizeMode">
+            <enum>QQuickWidget::SizeRootObjectToView</enum>
+           </property>
+           <property name="source">
+            <url>
+             <string>qrc:/qml/model</string>
+            </url>
            </property>
           </widget>
          </item>
@@ -309,6 +317,13 @@
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QQuickWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">QtQuickWidgets/QQuickWidget</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../assets/resources.qrc"/>
  </resources>

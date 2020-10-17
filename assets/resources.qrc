@@ -2,4 +2,7 @@
     <qresource prefix="/Icons">
         <file alias="AppIcon">appicon.png</file>
     </qresource>
+    <qresource prefix="/qml">
+        <file alias="model">model.qml</file>
+    </qresource>
 </RCC>

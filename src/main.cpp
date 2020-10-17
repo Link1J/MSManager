@@ -20,17 +20,25 @@
 #include <QApplication>
 #include <QSettings>
 #include <QStyleFactory>
+#include <QSplashScreen>
+#include <QQmlApplicationEngine>
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    QPixmap pixmap(":/Icons/AppIcon");
+    QSplashScreen splash(pixmap);
+    splash.show();
+    app.processEvents();
 
     QCoreApplication::setOrganizationName  ("Link1J"   );
     QCoreApplication::setOrganizationDomain("link1j.me");
     QCoreApplication::setApplicationName   ("msmanager");
-    
-    MainWindow main_window;
-    main_window.show();
 
+    QQmlApplicationEngine engine;
+    
+    MainWindow window;
+    window.show();
+    splash.finish(&window);
     return app.exec();
 }

@@ -31,15 +31,16 @@
 
 #include "settingsdialog.hpp"
 #include "userinfopanel.hpp"
+#include "aboutthis.hpp"
 
 MainWindow::MainWindow(QWidget *parent)
-  : QMainWindow(parent)
-  , ui(new Ui::MainWindow)
-  , userlist(new UserModel)
-  , pluginlist(new PluginModel)
-  , user_info(new UserInfoPanel(this))
+	: QMainWindow(parent)
+	, ui(new Ui::MainWindow)
+	, userlist(new UserModel)
+	, pluginlist(new PluginModel)
+	, user_info(new UserInfoPanel(this))
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
 	ui->users_list  ->setModel(userlist  .data());
 	ui->plugins_list->setModel(pluginlist.data());
@@ -69,7 +70,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::SendCommand()
 {
-    auto command = ui->command->text();
+	auto command = ui->command->text();
 	connection.SendCommand(command.toStdString());
 	ui->command->clear();
 }
@@ -142,7 +143,7 @@ void MainWindow::timerEvent(QTimerEvent* event)
 void MainWindow::OpenSettings() 
 {
 	auto settings_dialog = new SettingsDialog(this);
-    settings_dialog->exec();
+	settings_dialog->exec();
 
 	QSettings settings;
 	ui->server_ip->setText(settings.value("server_ip").toString());
@@ -151,24 +152,8 @@ void MainWindow::OpenSettings()
 
 void MainWindow::OpenAbout() 
 {
-	QMessageBox::about(this, "About",
-R"(MSManager - A Minecraft server manager
-
-Copyright (C) 2020 Jared Irwin
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-)");
+	auto about = new AboutThis{this};
+    about->exec();
 }
 
 void MainWindow::OpenAboutQt() 

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.11.0)
 project(msmanager VERSION 0.1.0.0)
 
-set(QT_VERSION_FIND "6.*.*")
+set(QT_VERSION_FIND "5.*.*")
 include(externals/ljh/cmake/Qt.cmake)
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
@@ -28,7 +28,7 @@ set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
 set(CPACK_PACKAGE_VERSION_TWEAK ${PROJECT_VERSION_TWEAK})
 set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/assets/appicon.png")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/assets/LICENSE.txt")
 
 set(CPACK_WIX_UPGRADE_GUID "04677607-C7E8-434D-BF16-0DBC27B6E539")
 set(CPACK_WIX_PRODUCT_ICON "${CMAKE_SOURCE_DIR}/assets/appicon-64x64.png")
@@ -45,6 +45,7 @@ set(SOURCES
     src/settingsdialog.cpp
     src/pluginmodel.cpp
     src/userinfopanel.cpp
+    src/aboutthis.cpp
     # Add New Files Here!
 )
 
@@ -53,8 +54,8 @@ set(UI_SOURCES
     # Add New Files Here!
 )
 
-find_package(Qt6 COMPONENTS Widgets OpenGLWidgets REQUIRED)
-find_package(Threads                              REQUIRED)
+find_package(Qt5     REQUIRED COMPONENTS Widgets QuickWidgets)
+find_package(Threads REQUIRED)
 
 if (APPLE)
     set(OS_BUNDLE MACOSX_BUNDLE)
@@ -68,14 +69,16 @@ add_executable(msmanager ${OS_BUNDLE}
 )
 
 set_target_properties(msmanager PROPERTIES
-    CXX_STANDARD 17
+    CXX_STANDARD 20
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
+    VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION 10.0.10240.0
 )
 
 target_compile_definitions(msmanager PUBLIC 
     "_WIN32_WINNT=0x0601"
     "WINVER=0x0601"
+    _SILENCE_CLANG_COROUTINE_MESSAGE=1
     $<$<PLATFORM_ID:WindowsStore>:"ASIO_WINDOWS_APP=1">
 )
 
@@ -88,7 +91,9 @@ target_link_libraries(msmanager
     Qt::Core
     Qt::Gui
     Qt::Widgets
-    Qt::OpenGLWidgets
+    Qt::Qml
+    Qt::Quick
+    Qt::QuickWidgets
     nlohmann_json::nlohmann_json
     Threads::Threads
     fmt::fmt
@@ -97,17 +102,18 @@ target_link_libraries(msmanager
 install(TARGETS msmanager RUNTIME DESTINATION .)
 
 if (WIN32 AND NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
+    set(windeployqt_args --no-compiler-runtime --no-translations --no-system-d3d-compiler --no-opengl-sw --verbose 0)
     add_custom_command(TARGET msmanager POST_BUILD
         COMMENT "Deploying Qt..."
         COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/windeployqt"
-        COMMAND Qt::windeployqt --dir "${CMAKE_BINARY_DIR}/windeployqt" "$<TARGET_FILE:msmanager>" --verbose 0 --no-compiler-runtime
+        COMMAND Qt::windeployqt --dir "${CMAKE_BINARY_DIR}/windeployqt" ${windeployqt_args} --qmldir "${CMAKE_SOURCE_DIR}/assets" "$<TARGET_FILE:msmanager>"
     )
     add_custom_command(TARGET msmanager POST_BUILD
         COMMENT "Creating Debug Folder..."
         COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/debug"
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/debug/"
         COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:msmanager>" "${CMAKE_BINARY_DIR}/debug/"
-        COMMAND Qt::windeployqt --dir "${CMAKE_BINARY_DIR}/debug" "$<TARGET_FILE:msmanager>" --verbose 0 --no-compiler-runtime
+        COMMAND Qt::windeployqt --dir "${CMAKE_BINARY_DIR}/debug" ${windeployqt_args} --qmldir "${CMAKE_SOURCE_DIR}/assets" "$<TARGET_FILE:msmanager>"
     )
     install(DIRECTORY ${CMAKE_BINARY_DIR}/windeployqt/ DESTINATION .)
 endif()
