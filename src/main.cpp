@@ -22,6 +22,8 @@
 #include <QStyleFactory>
 #include <QSplashScreen>
 #include <QQmlApplicationEngine>
+#include <QQuick3D>
+#include <QSurfaceFormat>
 
 int main(int argc, char *argv[])
 {
@@ -36,6 +38,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName   ("msmanager");
 
     QQmlApplicationEngine engine;
+
+    QSurfaceFormat::setDefaultFormat(QQuick3D::idealSurfaceFormat());
     
     MainWindow window;
     window.show();

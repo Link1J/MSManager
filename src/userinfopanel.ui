@@ -258,7 +258,7 @@
            </property>
            <property name="source">
             <url>
-             <string>qrc:/qml/model</string>
+             <string>qrc:/QML/Model</string>
             </url>
            </property>
           </widget>

@@ -54,7 +54,7 @@ set(UI_SOURCES
     # Add New Files Here!
 )
 
-find_package(Qt5     REQUIRED COMPONENTS Widgets QuickWidgets)
+find_package(Qt5     REQUIRED COMPONENTS Widgets Quick3D QuickWidgets 3DCore 3DRender)
 find_package(Threads REQUIRED)
 
 if (APPLE)
@@ -80,6 +80,7 @@ target_compile_definitions(msmanager PUBLIC
     "WINVER=0x0601"
     _SILENCE_CLANG_COROUTINE_MESSAGE=1
     $<$<PLATFORM_ID:WindowsStore>:"ASIO_WINDOWS_APP=1">
+    "QT_DISABLE_DEPRECATED_BEFORE=0x060000"
 )
 
 target_include_directories(msmanager PUBLIC
@@ -93,10 +94,19 @@ target_link_libraries(msmanager
     Qt::Widgets
     Qt::Qml
     Qt::Quick
+    Qt::Quick3D
     Qt::QuickWidgets
+    Qt::3DCore
+    Qt::3DRender
     nlohmann_json::nlohmann_json
     Threads::Threads
     fmt::fmt
+)
+
+add_custom_command(TARGET msmanager POST_BUILD
+    COMMENT "Deploying Qt..."
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/windeployqt"
+    COMMAND Qt::windeployqt --dir "${CMAKE_BINARY_DIR}/windeployqt" ${windeployqt_args} --qmldir "${CMAKE_SOURCE_DIR}/assets" "$<TARGET_FILE:msmanager>"
 )
 
 install(TARGETS msmanager RUNTIME DESTINATION .)

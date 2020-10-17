@@ -29,6 +29,12 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 {
 	ui->setupUi(this);
 	setAttribute(Qt::WA_DeleteOnClose);
+
+	if (!QIcon::hasThemeIcon("Setting"))
+	{
+		
+
+	}
 	
 	QSettings settings;
 

@@ -1,61 +1,54 @@
+/*
+	MSManager - A Minecraft server manager
+	Copyright (C) 2020 Jared Irwin
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import QtQuick 2.15
 import QtQuick3D 1.15
 import QtQuick3D.Materials 1.15
 import QtQuick3D.Effects 1.15
 import QtQuick3D.Helpers 1.15
 
+import "qrc:/Models/Zombie"
+
 View3D {
-	id: view
 	anchors.fill: parent
+	camera: camera
+	renderMode: View3D.Offscreen
 
 	environment: SceneEnvironment {
-		clearColor: "skyblue"
-		backgroundMode: SceneEnvironment.Color
+		clearColor: "transparent"
+		backgroundMode: SceneEnvironment.Transparent
+		antialiasingMode: SceneEnvironment.MSAA
+		antialiasingQuality: SceneEnvironment.High
+	}
+
+	PointLight {
+		position: Qt.vector3d(0, -100, 0);
+		brightness: 1500
 	}
 
 	PerspectiveCamera {
-		position: Qt.vector3d(0, 200, 300)
-		eulerRotation.x: -30
+		position: Qt.vector3d(0, 0, 800)
 	}
 
-	DirectionalLight {
-		eulerRotation.x: -30
-		eulerRotation.y: -70
-	}
+	Node {
+		position: Qt.vector3d(0, -400, 0);
 
-	Model {
-		position: Qt.vector3d(0, -200, 0)
-		source: "#Cylinder"
-		scale: Qt.vector3d(2, 0.2, 1)
-		materials: [ DefaultMaterial {
-				diffuseColor: "red"
-			}
-		]
-	}
-
-	Model {
-		position: Qt.vector3d(0, 150, 0)
-		source: "#Sphere"
-
-		materials: [ DefaultMaterial {
-				diffuseColor: "blue"
-			}
-		]
-
-		SequentialAnimation on y {
-			loops: Animation.Infinite
-			NumberAnimation {
-				duration: 3000
-				to: -150
-				from: 150
-				easing.type:Easing.InQuad
-			}
-			NumberAnimation {
-				duration: 3000
-				to: 150
-				from: -150
-				easing.type:Easing.OutQuad
-			}
+		Zombie {
 		}
 	}
 }

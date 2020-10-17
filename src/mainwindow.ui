@@ -507,9 +507,13 @@
 				<property name="title">
 					<string>File</string>
 				</property>
-				<addaction name="action_settings"/>
-				<addaction name="separator"/>
 				<addaction name="action_exit"/>
+			</widget>
+			<widget class="QMenu" name="menuSettings">
+				<property name="title">
+					<string>Settings</string>
+				</property>
+				<addaction name="action_server"/>
 			</widget>
 			<widget class="QMenu" name="menuHelp">
 				<property name="title">
@@ -519,11 +523,12 @@
 				<addaction name="action_about_qt"/>
 			</widget>
 			<addaction name="menuFile"/>
+			<addaction name="menuSettings"/>
 			<addaction name="menuHelp"/>
 		</widget>
-		<action name="action_settings">
+		<action name="action_server">
 			<property name="text">
-				<string>Settings</string>
+				<string>Server</string>
 			</property>
 		</action>
 		<action name="action_exit">
@@ -571,7 +576,7 @@
 			</hints>
 		</connection>
 		<connection>
-			<sender>action_settings</sender>
+			<sender>action_server</sender>
 			<signal>triggered()</signal>
 			<receiver>MainWindow</receiver>
 			<slot>OpenSettings()</slot>

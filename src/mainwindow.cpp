@@ -23,7 +23,6 @@
 #include <QImageReader>
 #include <QMessageBox>
 #include <QSettings>
-#include <QPlatformSurfaceEvent>
 
 #include <iostream>
 
@@ -236,4 +235,10 @@ void MainWindow::CreateWarningMessageBox(QString title, QString message)
 		title,
 		message
 	);
+}
+
+
+CommandFormating::CommandFormating(QObject* parent)
+	: QAbstractItemModel(parent)
+{
 }

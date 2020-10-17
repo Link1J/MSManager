@@ -23,8 +23,8 @@
 			<rect>
 				<x>0</x>
 				<y>0</y>
-				<width>258</width>
-				<height>171</height>
+				<width>300</width>
+				<height>250</height>
 			</rect>
 		</property>
 		<property name="sizePolicy">
@@ -35,22 +35,24 @@
 		</property>
 		<property name="minimumSize">
 			<size>
-				<width>258</width>
-				<height>171</height>
+				<width>300</width>
+				<height>250</height>
 			</size>
 		</property>
 		<property name="maximumSize">
 			<size>
-				<width>258</width>
-				<height>171</height>
+				<width>300</width>
+				<height>250</height>
 			</size>
 		</property>
 		<property name="windowTitle">
-			<string>Settings</string>
+			<string>Server Settings</string>
 		</property>
 		<property name="windowIcon">
 			<iconset theme="settings">
-				<normaloff>.</normaloff>.</iconset>
+				<normaloff>qrc:/Icons/AppIcon</normaloff>
+				qrc:/Icons/AppIcon
+			</iconset>
 		</property>
 		<property name="sizeGripEnabled">
 			<bool>false</bool>

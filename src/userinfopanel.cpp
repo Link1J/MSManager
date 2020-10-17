@@ -23,6 +23,8 @@
 
 #include <QInputDialog>
 #include <QQuickView>
+#include <QQmlEngine>
+#include <QQmlContext>
 
 std::vector<std::string> split(const std::string& s, char delimiter)
 {
@@ -43,7 +45,7 @@ UserInfoPanel::UserInfoPanel(QWidget* parent)
 {
 	ui->setupUi(this);
 
-	ui->model->setClearColor(Qt::transparent);
+	ui->model->engine()->rootContext()->setContextProperty("_window", ui->model);
 
 	connect(timer, SIGNAL(timeout()), this, SLOT(Update()));
 
@@ -79,13 +81,9 @@ void UserInfoPanel::SetUser(QString user)
 	Update();
 }
 
-#include <iostream>
-
 void UserInfoPanel::Update()
 {
 	std::vector<std::string> values;
-
-	std::cout << ui->model->status() << "\n";
 
 	values = split(SendUserCommand("scoreboard players get {} {}", "Air"   ), ' ');
 	ui->air   ->setText(QString::fromStdString(values[2]));
