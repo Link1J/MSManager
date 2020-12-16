@@ -236,9 +236,3 @@ void MainWindow::CreateWarningMessageBox(QString title, QString message)
 		message
 	);
 }
-
-
-CommandFormating::CommandFormating(QObject* parent)
-	: QAbstractItemModel(parent)
-{
-}

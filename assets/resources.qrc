@@ -2,16 +2,4 @@
     <qresource prefix="/Icons">
         <file alias="AppIcon">appicon.png</file>
     </qresource>
-    <qresource prefix="/QML">
-        <file alias="Model">model.qml</file>
-    </qresource>
-    <qresource prefix="/Models">
-        <file>Zombie/Zombie.qml</file>
-        <file>Zombie/meshes/z_arm_l.mesh</file>
-        <file>Zombie/meshes/z_arm_r.mesh</file>
-        <file>Zombie/meshes/z_body.mesh</file>
-        <file>Zombie/meshes/z_head.mesh</file>
-        <file>Zombie/meshes/z_leg_l.mesh</file>
-        <file>Zombie/meshes/z_leg_r.mesh</file>
-    </qresource>
 </RCC>

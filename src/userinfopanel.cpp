@@ -22,9 +22,6 @@
 #include <fmt/format.h>
 
 #include <QInputDialog>
-#include <QQuickView>
-#include <QQmlEngine>
-#include <QQmlContext>
 
 std::vector<std::string> split(const std::string& s, char delimiter)
 {
@@ -44,8 +41,6 @@ UserInfoPanel::UserInfoPanel(QWidget* parent)
 	, timer(new QTimer(this))
 {
 	ui->setupUi(this);
-
-	ui->model->engine()->rootContext()->setContextProperty("_window", ui->model);
 
 	connect(timer, SIGNAL(timeout()), this, SLOT(Update()));
 
