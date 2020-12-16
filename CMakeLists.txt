@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.11.0)
 project(msmanager VERSION 0.1.0.0)
 
-set(QT_VERSION_FIND "5.*.*")
+set(QT_VERSION_FIND "6.*.*")
 include(externals/ljh/cmake/Qt.cmake)
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
@@ -54,7 +54,7 @@ set(UI_SOURCES
     # Add New Files Here!
 )
 
-find_package(Qt5     REQUIRED COMPONENTS Widgets Quick3D QuickWidgets 3DCore 3DRender)
+find_package(Qt6     REQUIRED COMPONENTS Widgets)
 find_package(Threads REQUIRED)
 
 if (APPLE)
@@ -92,12 +92,6 @@ target_link_libraries(msmanager
     Qt::Core
     Qt::Gui
     Qt::Widgets
-    Qt::Qml
-    Qt::Quick
-    Qt::Quick3D
-    Qt::QuickWidgets
-    Qt::3DCore
-    Qt::3DRender
     nlohmann_json::nlohmann_json
     Threads::Threads
     fmt::fmt
